@@ -1,10 +1,13 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
+import ColorBar from "./color-bar";
 
 export default function Hero() {
   return (
-    <section className="px-35 py-10 flex flex-col md:flex-row items-center justify-between gap-8 bg-white">
-      <div className="flex-1 flex flex-col gap-6 max-w-xl">
-        <h2 className="text-4xl md:text-5xl font-light leading-tight">
+    <section className="relative px-4 sm:px-6 md:px-12 lg:px-20 py-8 md:py-10 flex flex-col md:flex-row items-center justify-between gap-8 bg-white overflow-hidden">
+      <div className="flex-1 flex flex-col gap-5 max-w-full md:max-w-xl z-10 text-center md:text-left">
+        <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-light leading-tight relative wrap-break-word">
           <span className="text-(--color-roxo)">
             Serviços <span className="font-bold">criativos</span> que
           </span>
@@ -35,15 +38,16 @@ export default function Hero() {
           </Button>
         </div>
       </div>
-      <div className="flex-1 flex items-center justify-center">
-        <div className="w-full max-w-xs md:max-w-sm">
+      <div className="flex-1 flex items-center justify-center z-0 relative w-full mt-6 md:mt-0">
+        <div className="w-full max-w-65 xs:max-w-[300px] sm:max-w-xs md:max-w-sm relative">
           <img
-            src="/hero-woman.png"
-            alt="Mulher sorrindo, representando atendimento personalizado"
-            className="w-full h-auto rounded-xl object-cover"
+            src="/assets/connective.jpg"
+            alt="Ana Beatriz Salviano e Clara, fundadoras da Connective"
+            className="w-full h-auto rounded-xl object-cover hero-img-mask"
           />
         </div>
       </div>
+      <ColorBar blocks={15} />
     </section>
   );
 }
