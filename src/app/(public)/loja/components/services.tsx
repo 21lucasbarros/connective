@@ -36,59 +36,9 @@ export default function Services() {
           {servicesItems.map((item) => (
             <div
               key={item.name}
-              className="rounded-2xl overflow-hidden shadow-lg flex flex-col bg-white border border-gray-100 min-h-[340px] md:min-h-[370px] xl:min-h-[400px] w-full max-w-full"
+              className="rounded-2xl overflow-hidden shadow-lg flex flex-col bg-white border border-gray-100 min-h-30 md:min-h-35 xl:min-h-40 w-full max-w-150"
             >
-              <div
-                className="flex flex-col md:flex-row items-start justify-between p-4 md:p-6 gap-2 md:gap-0"
-                style={{ background: item.color }}
-              >
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1 md:mb-2 truncate">
-                    {item.name}
-                  </h3>
-                  <p className="text-white text-sm sm:text-base opacity-90 mb-0 truncate">
-                    {item.description}
-                  </p>
-                </div>
-              </div>
-              <div className="flex-1 flex flex-col justify-between bg-white p-4 md:p-6">
-                <div className="mb-4">
-                  <div className="text-left">
-                    <span className="block text-gray-400 text-xs sm:text-sm line-through mb-1">
-                      A partir de
-                    </span>
-                    <span className="text-xl sm:text-2xl md:text-3xl font-bold text-[#1a1a1a]">
-                      {item.price}
-                    </span>
-                  </div>
-                  <ul className="mt-3 space-y-2 text-left">
-                    <li className="flex items-center gap-2 text-gray-700 text-xs sm:text-base">
-                      <span
-                        className="text-lg sm:text-xl"
-                        style={{ color: item.color }}
-                      >
-                        ✔
-                      </span>
-                      Atendimento personalizado
-                    </li>
-                    <li className="flex items-center gap-2 text-gray-700 text-xs sm:text-base">
-                      <span
-                        className="text-lg sm:text-xl"
-                        style={{ color: item.color }}
-                      >
-                        ✔
-                      </span>
-                      Resultado prático e rápido
-                    </li>
-                  </ul>
-                </div>
-                <button
-                  className="w-full py-2 sm:py-3 rounded-lg font-bold text-white text-base sm:text-lg mt-2 transition-transform duration-200 hover:scale-105"
-                  style={{ background: item.color }}
-                >
-                  Contratar
-                </button>
-              </div>
+              <div></div>
             </div>
           ))}
         </div>
