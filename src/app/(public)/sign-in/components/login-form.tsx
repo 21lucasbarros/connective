@@ -4,6 +4,8 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 
 const loginSchema = z.object({
@@ -56,41 +58,60 @@ export function LoginForm({ onError }: LoginFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium mb-1">Email</label>
-        <input
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="mx-auto mt-8 w-full max-w-sm rounded-xl bg-[#fffcf9] shadow-lg p-8 flex flex-col gap-6 border border-[#f3f3f3]"
+    >
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="email" className="text-[#222]">
+          Email
+        </Label>
+        <Input
+          id="email"
           type="email"
+          autoComplete="email"
           {...register("email")}
-          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-(--color-roxo)"
           aria-invalid={!!errors.email}
+          className={
+            errors.email
+              ? "border-[#fc5735] focus-visible:ring-[#fc5735]"
+              : "focus-visible:ring-[#8338ec]"
+          }
         />
         {errors.email && (
-          <p className="text-sm text-destructive mt-1">
+          <span className="text-xs text-[#fc5735] mt-1">
             {errors.email.message}
-          </p>
+          </span>
         )}
       </div>
 
-      <div>
-        <label className="block text-sm font-medium mb-1">Senha</label>
-        <input
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="password" className="text-[#222]">
+          Senha
+        </Label>
+        <Input
+          id="password"
           type="password"
+          autoComplete="current-password"
           {...register("password")}
-          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-(--color-roxo)"
           aria-invalid={!!errors.password}
+          className={
+            errors.password
+              ? "border-[#fc5735] focus-visible:ring-[#fc5735]"
+              : "focus-visible:ring-[#8338ec]"
+          }
         />
         {errors.password && (
-          <p className="text-sm text-destructive mt-1">
+          <span className="text-xs text-[#fc5735] mt-1">
             {errors.password.message}
-          </p>
+          </span>
         )}
       </div>
 
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-(--color-roxo) hover:bg-(--color-roxo)/90"
+        className="w-full h-10 rounded-md font-semibold text-base bg-[#8338ec] hover:bg-[#6d28d9] text-[#fffcf9] transition-colors"
       >
         {isSubmitting ? "Entrando..." : "Entrar"}
       </Button>
