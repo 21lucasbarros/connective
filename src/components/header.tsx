@@ -2,8 +2,8 @@
 
 import { Search, ShoppingCart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ColorBar from "./color-bar";
-import CartSideBar from "./cart-side-bar";
+import CartSideBar from "@/app/(public)/loja/components/cart-side-bar";
+import ColorBar from "@/app/(public)/loja/components/color-bar";
 
 const navItems = [
   { label: "Inicio", href: "/" },
