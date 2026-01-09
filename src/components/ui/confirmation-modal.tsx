@@ -36,7 +36,7 @@ export function ConfirmationModal({
         <Card className="w-full max-w-sm border border-[#f0f0f0] shadow-lg pointer-events-auto">
           <CardContent className="p-6">
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <AlertCircle className="size-6 text-[#fc5735]" />
               </div>
               <div className="flex-1 min-w-0">
