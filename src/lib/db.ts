@@ -15,6 +15,7 @@ export interface UserTable {
   name: string;
   password: string;
   email: string;
+  role?: string | null;
   created_at: ColumnType<Date, string | undefined, never>;
   updated_at: ColumnType<Date, string | undefined, never>;
 }
