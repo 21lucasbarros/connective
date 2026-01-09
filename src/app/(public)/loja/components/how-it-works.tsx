@@ -1,3 +1,5 @@
+"use client";
+
 import { Calendar, MessageSquareText, HeadsetIcon } from "lucide-react";
 
 export default function HowItWorks() {
