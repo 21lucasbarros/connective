@@ -101,25 +101,27 @@ export default function About() {
         </div>
 
         <motion.div
-          className="max-w-4xl mx-auto text-gray-700 space-y-4"
+          className="max-w-4xl mx-auto text-zinc-600 space-y-4"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.2 }}
         >
-          <p className="text-lg leading-relaxed">
+          <p className="text-lg leading-relaxed text-zinc-600">
             A Connective é liderada por{" "}
-            <span className="font-semibold">Ana Beatriz e Clara</span>, CEOs e
-            fundadoras da agência. Com olhar estratégico, sensibilidade criativa
-            e experiência prática no mercado digital, as CEOs da Connective unem
-            branding, marketing e direção criativa para construir marcas
-            autênticas, bem posicionadas e preparadas para crescer de forma
-            estruturada.
+            <span className="font-semibold" style={{ color: "#8338ec" }}>
+              Ana Beatriz e Clara
+            </span>
+            , CEOs e fundadoras da agência. Com olhar estratégico, sensibilidade
+            criativa e experiência prática no mercado digital, as CEOs da
+            Connective unem branding, marketing e direção criativa para
+            construir marcas autênticas, bem posicionadas e preparadas para
+            crescer de forma estruturada.
           </p>
 
-          <p className="text-lg leading-relaxed">
+          <p className="text-lg leading-relaxed text-zinc-600">
             Mais do que executar projetos, a liderança da Connective acredita em{" "}
-            <span className="font-semibold">
+            <span className="font-semibold" style={{ color: "#8338ec" }}>
               relacionamento, estratégia e construção conjunta
             </span>
             , acompanhando cada cliente de forma próxima e personalizada.
