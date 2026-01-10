@@ -1,3 +1,4 @@
+import About from "@/components/about";
 import Header from "@/components/header";
 import Hero from "@/components/hero";
 
@@ -6,6 +7,7 @@ export default function Home() {
     <main className="bg-[#f7f7f7] min-h-screen flex flex-col text-[#1a1a1a]">
       <Header />
       <Hero />
+      <About />
     </main>
   );
 }

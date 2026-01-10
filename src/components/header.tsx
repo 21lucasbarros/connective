@@ -1,9 +1,13 @@
 "use client";
 
-import { Search, ShoppingCart, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import CartSideBar from "@/app/(public)/loja/components/cart-side-bar";
+import dynamic from "next/dynamic";
 import ColorBar from "@/app/(public)/loja/components/color-bar";
+
+const CartSideBar = dynamic(
+  () => import("@/app/(public)/loja/components/cart-side-bar"),
+  { ssr: false }
+);
+const UserMenu = dynamic(() => import("./user-menu"), { ssr: false });
 
 const navItems = [
   { label: "Inicio", href: "/" },
@@ -34,14 +38,7 @@ export default function Header() {
         <div className="flex items-center gap-4">
           <CartSideBar />
           <div className="border-r h-6 mx-2 self-center" />
-          <Button
-            type="button"
-            variant="ghost"
-            aria-label="Usuário"
-            onClick={() => (window.location.href = "/sign-in")}
-          >
-            <User className="text-(--color-roxo) w-10 h-10" size={40} />
-          </Button>
+          <UserMenu />
         </div>
       </div>
       <ColorBar blocks={15} />

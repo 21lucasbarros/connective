@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Sheet,
   SheetTrigger,
@@ -22,7 +24,7 @@ export default function CartSideBar() {
     <Sheet>
       <SheetTrigger asChild>
         <Button variant="ghost" aria-label="Carrinho" className="relative">
-          <ShoppingCart className="text-(--color-roxo) w-10 h-10" size={40} />
+          <ShoppingCart className="text-(--color-roxo) w-12 h-12" size={48} />
           <Badge className="absolute -top-2 -right-2 bg-(--color-roxo) text-white text-xs font-bold w-5 h-5 flex items-center justify-center p-0">
             {itemCount}
           </Badge>
