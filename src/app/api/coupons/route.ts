@@ -1,5 +1,10 @@
 import { db } from "@/lib/db";
+import {
+  createCouponSchema,
+  updateCouponSchema,
+} from "@/lib/validations/coupon";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
 export async function GET() {
   try {
@@ -14,83 +19,90 @@ export async function GET() {
   }
 }
 
+export type CreateCouponParams = z.infer<typeof createCouponSchema>;
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
-    const code = formData.get("code") as string;
-    const discountType = formData.get("discountType") as "PERCENTAGE" | "FIXED";
-    const discountValue = Number(formData.get("discountValue"));
-    const minimumPurchaseValue = formData.get("minimumPurchaseValue")
-      ? Number(formData.get("minimumPurchaseValue"))
-      : null;
-    const startDate = new Date(formData.get("startDate") as string);
-    const endDate = formData.get("endDate")
-      ? new Date(formData.get("endDate") as string)
-      : null;
-    const maxUses = formData.get("maxUses")
-      ? Number(formData.get("maxUses"))
-      : null;
+    const coupon = createCouponSchema.parse({
+      code: formData.get("code"),
+      discountType: formData.get("discountType"),
+      discountValue: formData.get("discountValue"),
+      minimumPurchaseValue: formData.get("minimumPurchaseValue"),
+      startDate: formData.get("startDate"),
+      endDate: formData.get("endDate"),
+      maxUses: formData.get("maxUses"),
+    });
 
     const result = await db
       .insertInto("coupons")
       .values({
-        code,
-        discount_type: discountType,
-        discount_value: discountValue,
-        minimum_purchase_value: minimumPurchaseValue,
-        start_date: startDate,
-        end_date: endDate,
-        max_uses: maxUses,
-        used_count: 0,
+        code: coupon.code,
+        discount_type: coupon.discountType,
+        discount_value: coupon.discountValue,
+        minimum_purchase_value: coupon.minimumPurchaseValue,
+        start_date: new Date(coupon.startDate),
+        end_date: coupon.endDate ? new Date(coupon.endDate) : undefined,
+        max_uses: coupon.maxUses,
         is_active: true,
-        created_at: new Date(),
-        updated_at: new Date(),
+        used_count: 0,
       })
       .executeTakeFirstOrThrow();
 
     return NextResponse.json(result);
   } catch (error) {
     console.error(error);
+
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: "Dados inválidos", details: error.issues },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json({ error: "Erro ao criar cupom" }, { status: 500 });
   }
 }
 
+export type UpdateCouponParams = z.infer<typeof updateCouponSchema>;
 export async function PUT(req: NextRequest) {
   try {
     const formData = await req.formData();
-    const id = Number(formData.get("id"));
-    const code = formData.get("code") as string;
-    const discountType = formData.get("discountType") as "PERCENTAGE" | "FIXED";
-    const discountValue = Number(formData.get("discountValue"));
-    const minimumPurchaseValue = formData.get("minimumPurchaseValue")
-      ? Number(formData.get("minimumPurchaseValue"))
-      : null;
-    const startDate = new Date(formData.get("startDate") as string);
-    const endDate = formData.get("endDate")
-      ? new Date(formData.get("endDate") as string)
-      : null;
-    const maxUses = formData.get("maxUses")
-      ? Number(formData.get("maxUses"))
-      : null;
+    const coupon = updateCouponSchema.parse({
+      id: formData.get("id"),
+      code: formData.get("code"),
+      discountType: formData.get("discountType"),
+      discountValue: formData.get("discountValue"),
+      minimumPurchaseValue: formData.get("minimumPurchaseValue"),
+      startDate: formData.get("startDate"),
+      endDate: formData.get("endDate"),
+      maxUses: formData.get("maxUses"),
+    });
 
     const result = await db
       .updateTable("coupons")
       .set({
-        code,
-        discount_type: discountType,
-        discount_value: discountValue,
-        minimum_purchase_value: minimumPurchaseValue,
-        start_date: startDate,
-        end_date: endDate,
-        max_uses: maxUses,
-        updated_at: new Date(),
+        code: coupon.code,
+        discount_type: coupon.discountType,
+        discount_value: coupon.discountValue,
+        minimum_purchase_value: coupon.minimumPurchaseValue,
+        start_date: new Date(coupon.startDate),
+        end_date: coupon.endDate ? new Date(coupon.endDate) : undefined,
+        max_uses: coupon.maxUses,
       })
-      .where("id", "=", id)
+      .where("id", "=", coupon.id)
       .executeTakeFirstOrThrow();
 
     return NextResponse.json(result);
   } catch (error) {
     console.error(error);
+
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: "Dados inválidos", details: error.issues },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       { error: "Erro ao atualizar cupom" },
       { status: 500 }

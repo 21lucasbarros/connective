@@ -37,8 +37,8 @@ export interface CouponsTable {
   max_uses: number | null;
   used_count: number;
   is_active: boolean;
-  created_at: Date;
-  updated_at: Date;
+  created_at: ColumnType<Date, Date | undefined, never>;
+  updated_at: ColumnType<Date, Date | undefined, never>;
 }
 
 export interface Database {

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -19,19 +18,8 @@ import {
 } from "@/components/ui/select";
 import { Trash2, Ticket, Percent, Edit } from "lucide-react";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
-
-const couponSchema = z.object({
-  id: z.number().optional(),
-  code: z.string().min(1, "Código é obrigatório").min(3, "Mínimo 3 caracteres"),
-  discountType: z.enum(["PERCENTAGE", "FIXED"]),
-  discountValue: z.coerce.number().min(1, "Desconto inválido"),
-  minimumPurchaseValue: z.coerce.number().min(0).optional().nullable(),
-  startDate: z.string().min(1, "Data de início é obrigatória"),
-  endDate: z.string().optional().nullable(),
-  maxUses: z.number().min(0).optional().nullable(),
-});
-
-type CouponForm = z.infer<typeof couponSchema>;
+import { createCouponSchema } from "@/lib/validations/coupon";
+import { CreateCouponParams } from "@/app/api/coupons/route";
 
 export default function Coupons() {
   const [coupons, setCoupons] = useState<any[]>([]);
@@ -46,7 +34,7 @@ export default function Coupons() {
     watch,
     formState: { errors, isSubmitting },
   } = useForm({
-    resolver: zodResolver(couponSchema),
+    resolver: zodResolver(createCouponSchema),
     defaultValues: {
       code: "",
       discountType: "PERCENTAGE",
@@ -86,42 +74,29 @@ export default function Coupons() {
     setCoupons(data);
   }
 
-  async function onSubmit(values: CouponForm) {
+  async function onSubmit(values: CreateCouponParams) {
     if (duplicateCode) {
       return;
     }
-    if (editingId) {
-      const formData = new FormData();
-      formData.append("id", String(editingId));
-      formData.append("code", values.code);
-      formData.append("discountType", values.discountType);
-      formData.append("discountValue", String(values.discountValue));
+
+    const formData = new FormData();
+    formData.append("code", values.code);
+    formData.append("discountType", values.discountType);
+    formData.append("discountValue", values.discountValue.toString());
+    formData.append("startDate", values.startDate);
+    if (values.endDate) formData.append("endDate", values.endDate);
+    if (values.maxUses) formData.append("maxUses", values.maxUses.toString());
+    if (values.minimumPurchaseValue)
       formData.append(
         "minimumPurchaseValue",
-        values.minimumPurchaseValue ? String(values.minimumPurchaseValue) : ""
+        values.minimumPurchaseValue.toString()
       );
-      formData.append("startDate", values.startDate);
-      if (values.endDate) formData.append("endDate", values.endDate);
-      if (values.maxUses) formData.append("maxUses", String(values.maxUses));
 
-      await fetch("/api/coupons", {
-        method: "PUT",
-        body: formData,
-      });
+    if (editingId) {
+      formData.append("id", editingId.toString());
+      await fetch("/api/coupons", { method: "PUT", body: formData });
       setEditingId(null);
     } else {
-      const formData = new FormData();
-      formData.append("code", values.code);
-      formData.append("discountType", values.discountType);
-      formData.append("discountValue", String(values.discountValue));
-      formData.append(
-        "minimumPurchaseValue",
-        values.minimumPurchaseValue ? String(values.minimumPurchaseValue) : ""
-      );
-      formData.append("startDate", values.startDate);
-      if (values.endDate) formData.append("endDate", values.endDate);
-      if (values.maxUses) formData.append("maxUses", String(values.maxUses));
-
       await fetch("/api/coupons", { method: "POST", body: formData });
     }
 
