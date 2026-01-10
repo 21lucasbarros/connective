@@ -78,7 +78,16 @@ export default function AdminPage() {
             <Button
               type="button"
               variant="ghost"
-              onClick={() => router.back()}
+              onClick={() => {
+                if (
+                  typeof window !== "undefined" &&
+                  window.history.length > 1
+                ) {
+                  router.back();
+                } else {
+                  router.push("/");
+                }
+              }}
               className="w-10 h-10 flex items-center justify-center p-0 bg-transparent text-black hover:bg-transparent"
             >
               <ChevronsLeft className="size-5 text-black" />
