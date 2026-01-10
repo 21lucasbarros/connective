@@ -23,7 +23,11 @@ export default function CartSideBar() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" aria-label="Carrinho" className="relative">
+        <Button
+          variant="ghost"
+          aria-label="Carrinho"
+          className="relative cursor-pointer"
+        >
           <ShoppingCart className="text-(--color-roxo) w-12 h-12" size={48} />
           <Badge className="absolute -top-2 -right-2 bg-(--color-roxo) text-white text-xs font-bold w-5 h-5 flex items-center justify-center p-0">
             {itemCount}

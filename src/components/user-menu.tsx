@@ -42,13 +42,19 @@ export default function UserMenu() {
           variant="ghost"
           aria-label="Usuário"
           onClick={() => (window.location.href = "/sign-in")}
+          className="cursor-pointer"
         >
           <User className="text-(--color-roxo) w-16 h-16" size={64} />
         </Button>
       ) : (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button type="button" variant="ghost" aria-label="Menu do usuário">
+            <Button
+              type="button"
+              variant="ghost"
+              aria-label="Menu do usuário"
+              className="cursor-pointer"
+            >
               {user.role === "admin" ? (
                 <FaUserTie
                   className="text-(--color-roxo) w-16 h-16"
