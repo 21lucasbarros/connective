@@ -145,7 +145,7 @@ export default function AdminPage() {
           })}
         </nav>
 
-        <main>
+        <main className="min-h-0">
           {tab === "dashboard" && (
             <div className="space-y-6">
               <div>

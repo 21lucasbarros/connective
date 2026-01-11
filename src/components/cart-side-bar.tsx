@@ -1,16 +1,14 @@
-"use client";
-
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
-  SheetTrigger,
   SheetContent,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetFooter,
+  SheetTrigger,
 } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 
 const mockCart = [
   { id: 1, name: "Camiseta Connective", price: 79.9, qty: 1 },
@@ -20,27 +18,28 @@ const mockCart = [
 export default function CartSideBar() {
   const total = mockCart.reduce((acc, item) => acc + item.price * item.qty, 0);
   const itemCount = mockCart.reduce((acc, item) => acc + item.qty, 0);
+
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Button
           variant="ghost"
           aria-label="Carrinho"
-          className="relative cursor-pointer"
+          className="relative cursor-pointer p-2"
         >
-          <ShoppingCart className="text-(--color-roxo) w-12 h-12" size={48} />
-          <Badge className="absolute -top-2 -right-2 bg-(--color-roxo) text-white text-xs font-bold w-5 h-5 flex items-center justify-center p-0">
+          <ShoppingCart className="text-(--color-roxo) w-6 h-6" size={24} />
+          <Badge className="absolute -top-1 -right-1 bg-(--color-roxo) text-white text-xs font-bold min-w-5 h-5 flex items-center justify-center p-0 px-1">
             {itemCount}
           </Badge>
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-87.5 p-6 flex flex-col">
+      <SheetContent side="right" className="w-full sm:w-96 p-6 flex flex-col">
         <SheetHeader>
           <SheetTitle className="text-xl font-bold mb-4">
             Seu Carrinho
           </SheetTitle>
         </SheetHeader>
-        <div className="flex-1 flex flex-col gap-4">
+        <div className="flex-1 flex flex-col gap-4 overflow-auto">
           {mockCart.map((item) => (
             <div
               key={item.id}
@@ -48,7 +47,7 @@ export default function CartSideBar() {
             >
               <div>
                 <div className="font-medium">{item.name}</div>
-                <div className="text-sm text-zinc-500">Qtd: {item.qty}</div>
+                <div className="text-sm text-gray-500">Qtd: {item.qty}</div>
               </div>
               <div className="font-semibold text-(--color-roxo)">
                 R$ {item.price.toFixed(2)}

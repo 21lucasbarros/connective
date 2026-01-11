@@ -4,7 +4,7 @@ const barColors = [
   "var(--color-verde)",
 ];
 
-export default function ColorBar({ blocks = 15 }) {
+export default function ColorBar({ blocks = 15 }: { blocks?: number }) {
   return (
     <div
       className="absolute left-0 bottom-0 w-full h-1 flex"

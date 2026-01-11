@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Sparkles, Zap, Target } from "lucide-react";
 import { motion } from "framer-motion";
-import ColorBar from "@/app/(public)/loja/components/color-bar";
+import ColorBar from "@/components/color-bar";
 
 export default function Hero() {
   return (

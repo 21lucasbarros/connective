@@ -14,11 +14,29 @@ import {
 } from "@/components/ui/select";
 import { Users, Mail, Shield, Trash2, UserCircle, Crown } from "lucide-react";
 import { User } from "@/lib/db";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+} from "@/components/ui/pagination";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 
 export default function UsersComponent() {
   const [users, setUsers] = useState<User[]>([]);
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+  const [page, setPage] = useState(1);
+  const pageSize = 8;
 
   useEffect(() => {
     fetchUsers();
@@ -56,6 +74,10 @@ export default function UsersComponent() {
   const adminUsers = users.filter((u) => u.role === "admin");
   const regularUsers = users.filter((u) => u.role !== "admin");
 
+  const allUsers = [...adminUsers, ...regularUsers];
+  const totalPages = Math.max(1, Math.ceil(allUsers.length / pageSize));
+  const pagedUsers = allUsers.slice((page - 1) * pageSize, page * pageSize);
+
   return (
     <>
       <ConfirmationModal
@@ -67,7 +89,7 @@ export default function UsersComponent() {
         confirmText="Excluir"
         cancelText="Cancelar"
       />
-      <section className="px-6 py-2">
+      <section className="px-6 py-2 min-h-0">
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-[#222] mb-1 flex items-center gap-2">
             <Users className="size-5 text-[#43bccd]" />
@@ -95,107 +117,42 @@ export default function UsersComponent() {
           </Card>
         ) : (
           <div className="space-y-6">
-            {adminUsers.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <Crown className="size-4 text-[#ffba08]" />
-                  <h4 className="text-sm font-semibold text-[#666] uppercase tracking-wide">
-                    Administradores ({adminUsers.length})
-                  </h4>
-                </div>
-                <div className="grid gap-3">
-                  {adminUsers.map((u) => (
-                    <Card
-                      key={u.id}
-                      className="border border-[#f0f0f0] hover:border-[#e0e0e0] transition-colors shadow-sm"
-                    >
-                      <CardContent className="p-5">
-                        <div className="flex items-center justify-between gap-4">
-                          <div className="flex items-start gap-4 flex-1 min-w-0">
-                            <div className="size-12 rounded-full bg-linear-to-br from-[#8338ec] to-[#43bccd] flex items-center justify-center shrink-0">
-                              <UserCircle className="size-7 text-white" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h5 className="font-semibold text-[#222] text-base truncate">
-                                  {u.name}
-                                </h5>
-                                <Badge className="bg-[#ffba08]/20 text-[#ffba08] border-0 font-medium shrink-0">
-                                  <Crown className="size-3 mr-1" />
-                                  Admin
-                                </Badge>
-                              </div>
-                              <div className="flex items-center gap-1.5 text-sm text-[#666]">
-                                <Mail className="size-3.5" />
-                                <span className="truncate">{u.email}</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex gap-2 items-center shrink-0">
-                            <Select
-                              value={u.role ?? "user"}
-                              onValueChange={(role) => onChangeRole(u.id, role)}
-                            >
-                              <SelectTrigger className="w-32.5 border-[#e5e5e5] focus:ring-[#8338ec]">
-                                <Shield className="size-3.5 mr-1.5" />
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="user">Usuário</SelectItem>
-                                <SelectItem value="admin">Admin</SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => onDelete(u.id)}
-                              className="hover:bg-[#fc5735]/10 hover:text-[#fc5735]"
-                              title="Remover usuário"
-                            >
-                              <Trash2 className="size-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <UserCircle className="size-4 text-[#43bccd]" />
+                <h4 className="text-sm font-semibold text-[#666] uppercase tracking-wide">
+                  Usuários ({users.length})
+                </h4>
               </div>
-            )}
 
-            {adminUsers.length > 0 && regularUsers.length > 0 && <Separator />}
-
-            {regularUsers.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <UserCircle className="size-4 text-[#43bccd]" />
-                  <h4 className="text-sm font-semibold text-[#666] uppercase tracking-wide">
-                    Usuários ({regularUsers.length})
-                  </h4>
-                </div>
-                <div className="grid gap-3">
-                  {regularUsers.map((u) => (
-                    <Card
-                      key={u.id}
-                      className="border border-[#f0f0f0] hover:border-[#e0e0e0] transition-colors shadow-sm"
-                    >
-                      <CardContent className="p-5">
-                        <div className="flex items-center justify-between gap-4">
-                          <div className="flex items-start gap-4 flex-1 min-w-0">
-                            <div className="size-12 rounded-full bg-[#f0f0f0] flex items-center justify-center shrink-0">
-                              <UserCircle className="size-7 text-[#999]" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h5 className="font-semibold text-[#222] text-base mb-1 truncate">
-                                {u.name}
-                              </h5>
-                              <div className="flex items-center gap-1.5 text-sm text-[#666]">
-                                <Mail className="size-3.5" />
-                                <span className="truncate">{u.email}</span>
+              <Card className="border border-[#f0f0f0] shadow-sm">
+                <CardContent className="p-4">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Nome</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Função</TableHead>
+                        <TableHead className="text-right">Ações</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {pagedUsers.map((u) => (
+                        <TableRow key={u.id}>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <div className="size-10 rounded-full bg-[#f0f0f0] flex items-center justify-center">
+                                <UserCircle className="size-6 text-[#999]" />
+                              </div>
+                              <div className="min-w-0">
+                                <div className="font-medium truncate">
+                                  {u.name}
+                                </div>
                               </div>
                             </div>
-                          </div>
-                          <div className="flex gap-2 items-center shrink-0">
+                          </TableCell>
+                          <TableCell className="truncate">{u.email}</TableCell>
+                          <TableCell>
                             <Select
                               value={u.role ?? "user"}
                               onValueChange={(role) => onChangeRole(u.id, role)}
@@ -209,23 +166,60 @@ export default function UsersComponent() {
                                 <SelectItem value="admin">Admin</SelectItem>
                               </SelectContent>
                             </Select>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => onDelete(u.id)}
-                              className="hover:bg-[#fc5735]/10 hover:text-[#fc5735]"
-                              title="Remover usuário"
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => onDelete(u.id)}
+                                className="hover:bg-[#fc5735]/10 hover:text-[#fc5735]"
+                                title="Remover usuário"
+                              >
+                                <Trash2 className="size-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+
+                  <div className="mt-4">
+                    <Pagination aria-label="Users pagination">
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious
+                            onClick={() => setPage((p) => Math.max(1, p - 1))}
+                            aria-disabled={page === 1}
+                          />
+                        </PaginationItem>
+
+                        {Array.from({ length: totalPages }).map((_, i) => (
+                          <PaginationItem key={i}>
+                            <PaginationLink
+                              isActive={page === i + 1}
+                              onClick={() => setPage(i + 1)}
                             >
-                              <Trash2 className="size-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
+                              {i + 1}
+                            </PaginationLink>
+                          </PaginationItem>
+                        ))}
+
+                        <PaginationItem>
+                          <PaginationNext
+                            onClick={() =>
+                              setPage((p) => Math.min(totalPages, p + 1))
+                            }
+                            aria-disabled={page === totalPages}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         )}
       </section>

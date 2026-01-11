@@ -2,8 +2,17 @@
 
 import { useEffect, useState } from "react";
 
+type ServicePublic = {
+  id?: number | string;
+  name: string;
+  description?: string | null;
+  price?: number | string | null;
+  formatted_price?: string | null;
+  color?: string | null;
+};
+
 export default function Services() {
-  const [services, setServices] = useState<any[]>([]);
+  const [services, setServices] = useState<ServicePublic[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -59,7 +68,19 @@ export default function Services() {
                   </div>
                   <div className="mt-4">
                     <span className="text-xl font-bold">
-                      {item.price ?? item.formatted_price ?? ""}
+                      {item.price !== undefined && item.price !== null
+                        ? typeof item.price === "number"
+                          ? item.price.toLocaleString("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            })
+                          : !isNaN(Number(item.price))
+                          ? Number(item.price).toLocaleString("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            })
+                          : item.formatted_price ?? ""
+                        : item.formatted_price ?? ""}
                     </span>
                   </div>
                 </div>

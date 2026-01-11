@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import ColorBar from "./color-bar";
+import ColorBar from "../../../../components/color-bar";
 
 export default function Hero() {
   return (

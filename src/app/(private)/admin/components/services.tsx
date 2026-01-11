@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,6 +20,23 @@ import {
   FileText,
   Sparkles,
 } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+} from "@/components/ui/pagination";
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 
 const serviceSchema = z.object({
@@ -30,13 +47,17 @@ const serviceSchema = z.object({
 });
 
 type ServiceForm = z.infer<typeof serviceSchema>;
+type ServiceItem = z.infer<typeof serviceSchema> & { id: number };
 
 export default function Service() {
-  const [services, setServices] = useState<any[]>([]);
+  const [services, setServices] = useState<ServiceItem[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+  const [page, setPage] = useState(1);
+  const pageSize = 6;
   const {
     register,
+    control,
     handleSubmit,
     reset,
     setValue,
@@ -82,7 +103,7 @@ export default function Service() {
     fetchServices();
   }
 
-  async function onEdit(service: any) {
+  async function onEdit(service: ServiceItem) {
     setEditingId(service.id);
     setValue("name", service.name);
     setValue("price", service.price);
@@ -103,6 +124,9 @@ export default function Service() {
     fetchServices();
   }
 
+  const totalPages = Math.max(1, Math.ceil(services.length / pageSize));
+  const pagedServices = services.slice((page - 1) * pageSize, page * pageSize);
+
   return (
     <>
       <ConfirmationModal
@@ -114,7 +138,7 @@ export default function Service() {
         confirmText="Excluir"
         cancelText="Cancelar"
       />
-      <section className="px-6 py-2">
+      <section className="px-6 py-2 min-h-0">
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-[#222] mb-1 flex items-center gap-2">
             <Sparkles className="size-5 text-[#8338ec]" />
@@ -162,14 +186,38 @@ export default function Service() {
                   <DollarSign className="size-3.5" />
                   Preço
                 </Label>
-                <Input
-                  id="price"
-                  type="number"
-                  step="0.01"
-                  {...register("price", { valueAsNumber: true })}
-                  placeholder="0.00"
-                  className="border-[#e5e5e5] focus-visible:ring-[#43bccd]"
-                  aria-invalid={!!errors.price}
+                <Controller
+                  control={control}
+                  name="price"
+                  defaultValue={0}
+                  render={({ field }) => {
+                    const formatCurrency = (val: number | undefined) =>
+                      typeof val === "number"
+                        ? val.toLocaleString("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          })
+                        : "";
+
+                    return (
+                      <Input
+                        id="price"
+                        inputMode="numeric"
+                        value={formatCurrency(field.value)}
+                        onChange={(e) => {
+                          const digits = e.target.value.replace(/\D/g, "");
+                          const cents =
+                            digits === "" ? 0 : parseInt(digits, 10);
+                          const numberValue = cents / 100;
+                          field.onChange(numberValue);
+                        }}
+                        onBlur={field.onBlur}
+                        placeholder="R$ 0,00"
+                        className="border-[#e5e5e5] focus-visible:ring-[#43bccd]"
+                        aria-invalid={!!errors.price}
+                      />
+                    );
+                  }}
                 />
                 {errors.price && (
                   <p className="text-xs text-[#fc5735]">
@@ -229,88 +277,123 @@ export default function Service() {
                 )}
               </div>
             </form>
+
+            <Separator className="my-6" />
+
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold text-[#222] mb-1">
+                Serviços Cadastrados
+              </h3>
+              <p className="text-sm text-[#888]">
+                {services.length === 0
+                  ? "Nenhum serviço cadastrado ainda"
+                  : `${services.length} ${
+                      services.length === 1 ? "serviço" : "serviços"
+                    } disponível`}
+              </p>
+            </div>
+
+            {services.length === 0 ? (
+              <div className="border border-dashed border-[#e5e5e5] p-6 rounded">
+                <div className="flex flex-col items-center justify-center py-6 text-center">
+                  <div className="size-12 rounded-full bg-[#f8f8f8] flex items-center justify-center mb-3">
+                    <Sparkles className="size-6 text-[#ccc]" />
+                  </div>
+                  <p className="text-[#888] text-sm">
+                    Comece adicionando seu primeiro serviço
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Nome</TableHead>
+                      <TableHead>Preço</TableHead>
+                      <TableHead className="hidden md:table-cell">
+                        Descrição
+                      </TableHead>
+                      <TableHead className="text-right">Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {pagedServices.map((s: ServiceItem) => (
+                      <TableRow key={s.id}>
+                        <TableCell>
+                          <div className="font-medium">{s.name}</div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge className="bg-[#8338ec]/10 text-[#8338ec] border-0 font-medium">
+                            R$ {Number(s.price).toFixed(2)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell text-sm text-[#666]">
+                          {s.description ?? "—"}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => onEdit(s)}
+                              className="hover:bg-[#8338ec]/10 hover:text-[#8338ec]"
+                              title="Editar serviço"
+                            >
+                              <Pencil className="size-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => onDelete(s.id)}
+                              className="hover:bg-[#fc5735]/10 hover:text-[#fc5735]"
+                              title="Excluir serviço"
+                            >
+                              <Trash2 className="size-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+
+                <div className="mt-4">
+                  <Pagination aria-label="Services pagination">
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          onClick={() => setPage((p) => Math.max(1, p - 1))}
+                          aria-disabled={page === 1}
+                        />
+                      </PaginationItem>
+
+                      {Array.from({ length: totalPages }).map((_, i) => (
+                        <PaginationItem key={i}>
+                          <PaginationLink
+                            isActive={page === i + 1}
+                            onClick={() => setPage(i + 1)}
+                          >
+                            {i + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={() =>
+                            setPage((p) => Math.min(totalPages, p + 1))
+                          }
+                          aria-disabled={page === totalPages}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
-
-        <Separator className="my-8" />
-
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-[#222] mb-1">
-            Serviços Cadastrados
-          </h3>
-          <p className="text-sm text-[#888]">
-            {services.length === 0
-              ? "Nenhum serviço cadastrado ainda"
-              : `${services.length} ${
-                  services.length === 1 ? "serviço" : "serviços"
-                } disponível`}
-          </p>
-        </div>
-
-        {services.length === 0 ? (
-          <Card className="border border-dashed border-[#e5e5e5]">
-            <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="size-16 rounded-full bg-[#f8f8f8] flex items-center justify-center mb-4">
-                <Sparkles className="size-8 text-[#ccc]" />
-              </div>
-              <p className="text-[#888] text-sm">
-                Comece adicionando seu primeiro serviço
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid gap-4">
-            {services.map((s) => (
-              <Card
-                key={s.id}
-                className="border border-[#f0f0f0] hover:border-[#e0e0e0] transition-colors shadow-sm"
-              >
-                <CardContent className="p-5">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h4 className="font-semibold text-[#222] text-base">
-                          {s.name}
-                        </h4>
-                        <Badge
-                          variant="secondary"
-                          className="bg-[#8338ec]/10 text-[#8338ec] border-0 font-medium"
-                        >
-                          R$ {Number(s.price).toFixed(2)}
-                        </Badge>
-                      </div>
-                      {s.description && (
-                        <p className="text-sm text-[#666] leading-relaxed">
-                          {s.description}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex gap-2 shrink-0">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => onEdit(s)}
-                        className="hover:bg-[#8338ec]/10 hover:text-[#8338ec]"
-                        title="Editar serviço"
-                      >
-                        <Pencil className="size-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => onDelete(s.id)}
-                        className="hover:bg-[#fc5735]/10 hover:text-[#fc5735]"
-                        title="Excluir serviço"
-                      >
-                        <Trash2 className="size-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
       </section>
     </>
   );
