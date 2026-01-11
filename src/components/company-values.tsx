@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Target,
   Eye,
@@ -9,6 +11,7 @@ import {
   TrendingUp,
   Shield,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function CompanyValues() {
@@ -61,75 +64,114 @@ export default function CompanyValues() {
     <div className="min-h-screen bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 py-16 px-4">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-800 mb-4">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 6 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <motion.h1
+            className="text-5xl font-bold text-gray-800 mb-4"
+            initial={{ opacity: 0, y: 6 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{
+              duration: 0.8,
+              delay: 0.02,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
             Missão, <span className="text-purple-600">Visão</span> e Valores
-          </h1>
-          <div className="w-32 h-1 bg-linear-to-r from-purple-400 via-pink-400 to-orange-400 mx-auto rounded-full"></div>
-        </div>
+          </motion.h1>
+
+          <motion.div
+            className="w-32 h-1 bg-linear-to-r from-purple-400 via-pink-400 to-orange-400 mx-auto rounded-full"
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          />
+        </motion.div>
 
         {/* Missão */}
-        <Card className="mb-8 shadow-lg border-0 bg-white/80 backdrop-blur">
-          <CardContent className="p-8">
-            <div className="flex items-start gap-4 mb-4">
-              <div className="p-3 bg-linear-to-br from-purple-500 to-pink-500 rounded-full">
-                <Target className="w-8 h-8 text-white" />
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Card className="mb-8 shadow-lg border-0 bg-white/80 backdrop-blur">
+            <CardContent className="p-8">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="p-3 bg-linear-to-br from-purple-500 to-pink-500 rounded-full">
+                  <Target className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-800 mt-2">
+                  Missão
+                </h2>
               </div>
-              <h2 className="text-3xl font-bold text-gray-800 mt-2">Missão</h2>
-            </div>
-            <p className="text-lg text-gray-700 leading-relaxed mb-4">
-              Conectar{" "}
-              <span className="font-semibold text-purple-600">
-                marcas à sua essência
-              </span>{" "}
-              por meio de{" "}
-              <span className="font-semibold text-purple-600">
-                estratégia, criatividade e identidade visual
-              </span>
-              , ajudando empresas a se posicionarem com clareza, propósito e
-              consistência no{" "}
-              <span className="font-semibold text-purple-600">
-                ambiente digital
-              </span>
-              .
-            </p>
-            <p className="text-gray-600 leading-relaxed">
-              Nossa missão é transformar ideias em marcas estruturadas, humanas
-              e autênticas, oferecendo soluções criativas que fazem sentido para
-              o momento e os objetivos de cada cliente.
-            </p>
-          </CardContent>
-        </Card>
+              <p className="text-lg text-gray-700 leading-relaxed mb-4">
+                Conectar{" "}
+                <span className="font-semibold text-purple-600">
+                  marcas à sua essência
+                </span>{" "}
+                por meio de{" "}
+                <span className="font-semibold text-purple-600">
+                  estratégia, criatividade e identidade visual
+                </span>
+                , ajudando empresas a se posicionarem com clareza, propósito e
+                consistência no{" "}
+                <span className="font-semibold text-purple-600">
+                  ambiente digital
+                </span>
+                .
+              </p>
+              <p className="text-gray-600 leading-relaxed">
+                Nossa missão é transformar ideias em marcas estruturadas,
+                humanas e autênticas, oferecendo soluções criativas que fazem
+                sentido para o momento e os objetivos de cada cliente.
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Visão */}
-        <Card className="mb-12 shadow-lg border-0 bg-white/80 backdrop-blur">
-          <CardContent className="p-8">
-            <div className="flex items-start gap-4 mb-4">
-              <div className="p-3 bg-linear-to-br from-blue-500 to-purple-500 rounded-full">
-                <Eye className="w-8 h-8 text-white" />
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Card className="mb-12 shadow-lg border-0 bg-white/80 backdrop-blur">
+            <CardContent className="p-8">
+              <div className="flex items-start gap-4 mb-4">
+                <div className="p-3 bg-linear-to-br from-blue-500 to-purple-500 rounded-full">
+                  <Eye className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-800 mt-2">Visão</h2>
               </div>
-              <h2 className="text-3xl font-bold text-gray-800 mt-2">Visão</h2>
-            </div>
-            <p className="text-lg text-gray-700 leading-relaxed mb-4">
-              Ser reconhecida como uma{" "}
-              <span className="font-semibold text-blue-600">
-                agência criativa
-              </span>{" "}
-              referência em{" "}
-              <span className="font-semibold text-blue-600">
-                branding e estratégia digital
-              </span>
-              , conhecida por construir marcas sólidas, bem posicionadas e
-              preparadas para crescer de forma estruturada e sustentável.
-            </p>
-            <p className="text-gray-600 leading-relaxed">
-              A Connective busca crescer junto com seus clientes, mantendo a{" "}
-              <span className="font-semibold">proximidade</span>, a qualidade
-              estratégica e a sensibilidade criativa como pilares de cada
-              projeto.
-            </p>
-          </CardContent>
-        </Card>
+              <p className="text-lg text-gray-700 leading-relaxed mb-4">
+                Ser reconhecida como uma{" "}
+                <span className="font-semibold text-blue-600">
+                  agência criativa
+                </span>{" "}
+                referência em{" "}
+                <span className="font-semibold text-blue-600">
+                  branding e estratégia digital
+                </span>
+                , conhecida por construir marcas sólidas, bem posicionadas e
+                preparadas para crescer de forma estruturada e sustentável.
+              </p>
+              <p className="text-gray-600 leading-relaxed">
+                A Connective busca crescer junto com seus clientes, mantendo a{" "}
+                <span className="font-semibold">proximidade</span>, a qualidade
+                estratégica e a sensibilidade criativa como pilares de cada
+                projeto.
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Valores */}
         <div className="mb-8">
@@ -140,35 +182,53 @@ export default function CompanyValues() {
             <h2 className="text-3xl font-bold text-gray-800">Valores</h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <motion.div
+            className="grid md:grid-cols-2 gap-6"
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={{
+              hidden: {},
+              show: { transition: { staggerChildren: 0.12 } },
+            }}
+          >
             {values.map((value, index) => {
               const Icon = value.icon;
               return (
-                <Card
+                <motion.div
                   key={index}
-                  className="shadow-lg border-0 bg-white/80 backdrop-blur hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                  variants={{
+                    hidden: { opacity: 0, y: 6 },
+                    show: {
+                      opacity: 1,
+                      y: 0,
+                      transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+                    },
+                  }}
                 >
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div
-                        className={`p-2.5 bg-gray-100 rounded-lg ${value.color}`}
-                      >
-                        <Icon className="w-6 h-6" />
+                  <Card className="shadow-lg border-0 bg-white/80 backdrop-blur hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div
+                          className={`p-2.5 bg-gray-100 rounded-lg ${value.color}`}
+                        >
+                          <Icon className="w-6 h-6" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-xl font-bold text-gray-800 mb-2">
+                            {value.title}
+                          </h3>
+                          <p className="text-gray-600 leading-relaxed">
+                            {value.description}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold text-gray-800 mb-2">
-                          {value.title}
-                        </h3>
-                        <p className="text-gray-600 leading-relaxed">
-                          {value.description}
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
 
         {/* Dots indicator */}
