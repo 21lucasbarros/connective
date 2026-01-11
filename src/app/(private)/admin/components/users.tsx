@@ -145,8 +145,16 @@ export default function UsersComponent() {
                                 <UserCircle className="size-6 text-[#999]" />
                               </div>
                               <div className="min-w-0">
-                                <div className="font-medium truncate">
-                                  {u.name}
+                                <div className="flex items-center gap-2">
+                                  <div className="font-medium truncate">
+                                    {u.name}
+                                  </div>
+                                  {u.role === "admin" && (
+                                    <Crown
+                                      className="size-4 text-yellow-500"
+                                      aria-label="Admin"
+                                    />
+                                  )}
                                 </div>
                               </div>
                             </div>
