@@ -4,7 +4,8 @@ export const createCouponSchema = z.object({
   code: z
     .string("Código inválido")
     .min(1, "Código é obrigatório")
-    .min(3, "Mínimo 3 caracteres"),
+    .min(3, "Mínimo 3 caracteres")
+    .regex(/^\S+$/, "Código não pode conter espaços"),
   discountType: z.enum(["PERCENTAGE", "FIXED"], "Tipo de desconto inválido"),
   discountValue: z.coerce
     .number("Desconto inválido")

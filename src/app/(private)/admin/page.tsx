@@ -70,6 +70,15 @@ export default function AdminPage() {
     setServices(data.services ?? data ?? []);
   }
 
+  function isExpired(item: any) {
+    if (!item?.end_date) return false;
+    return new Date(item.end_date) < new Date();
+  }
+
+  function isActiveCoupon(item: any) {
+    return !isExpired(item) && Boolean(item?.is_active);
+  }
+
   return (
     <div className="min-h-screen bg-[#f6fcfd]">
       <header className="bg-white sticky top-0 z-40 shadow-sm">
@@ -168,7 +177,8 @@ export default function AdminPage() {
                     </div>
                     <h3 className="text-lg font-semibold">Cupons Ativos</h3>
                     <p className="text-white text-sm mt-1">
-                      {coupons.filter((c) => !c.is_active).length} inativos
+                      {coupons.filter((c) => !isActiveCoupon(c)).length}{" "}
+                      inativos
                     </p>
                   </CardContent>
                 </Card>
