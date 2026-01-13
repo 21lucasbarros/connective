@@ -9,6 +9,7 @@ import {
   DropdownMenuLabel,
 } from "./ui/dropdown-menu";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/lib/auth";
 
 interface UserData {
   name?: string;
@@ -17,8 +18,7 @@ interface UserData {
 }
 
 export default function UserMenu() {
-  const [user, setUser] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading, logout } = useAuth();
 
   function getGreeting() {
     const hour = new Date().getHours();
@@ -27,26 +27,8 @@ export default function UserMenu() {
     return "Boa noite";
   }
 
-  useEffect(() => {
-    try {
-      const userStr = localStorage.getItem("user");
-      if (userStr) {
-        setUser(JSON.parse(userStr));
-      }
-    } catch (error) {
-      console.error("Error loading user data:", error);
-    }
-    setLoading(false);
-  }, []);
-
   const handleLogout = async () => {
-    try {
-      await fetch("/api/auth/logout", { method: "POST" });
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-    localStorage.removeItem("user");
-    window.location.href = "/sign-in";
+    logout();
   };
 
   if (loading) return null;

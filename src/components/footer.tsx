@@ -38,7 +38,7 @@ export default function Footer() {
           {/* Navegação e Contato */}
           <div className="space-y-6">
             <div>
-              <h3 className="text-[#ffba08] font-semibold mb-3 text-sm uppercase tracking-wider">
+              <h3 className="text-[#fc5735] font-semibold mb-3 text-sm uppercase tracking-wider">
                 Navegação
               </h3>
               <div className="space-y-2">
@@ -58,7 +58,7 @@ export default function Footer() {
             </div>
 
             <div>
-              <h3 className="text-[#ffba08] font-semibold mb-3 text-sm uppercase tracking-wider">
+              <h3 className="text-[#fc5735] font-semibold mb-3 text-sm uppercase tracking-wider">
                 Contato
               </h3>
               <div className="space-y-2">
@@ -79,7 +79,7 @@ export default function Footer() {
 
           {/* Horário */}
           <div>
-            <h3 className="text-[#ffba08] font-semibold mb-3 text-sm uppercase tracking-wider">
+            <h3 className="text-[#fc5735] font-semibold mb-3 text-sm uppercase tracking-wider">
               Horário de Atendimento
             </h3>
             <div className="space-y-3">
@@ -103,7 +103,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <Separator className="mb-6 bg-linear-to-r from-[#fc5735]/30 via-[#ffba08]/30 via-[#8338ec]/30 to-[#43bccd]/30" />
+        <Separator className="mb-6 bg-linear-to-r from-[#fc5735]/30 via-[#8338ec]/30 to-[#43bccd]/30" />
 
         {/* Bottom */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-600">
