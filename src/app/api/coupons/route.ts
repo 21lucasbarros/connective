@@ -6,10 +6,19 @@ import {
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
+// Helper to safely serialize objects that may contain BigInt values
+function safeSerialize(obj: unknown) {
+  return JSON.parse(
+    JSON.stringify(obj, (_key, value) =>
+      typeof value === "bigint" ? value.toString() : value
+    )
+  );
+}
+
 export async function GET() {
   try {
     const coupons = await db.selectFrom("coupons").selectAll().execute();
-    return NextResponse.json(coupons);
+    return NextResponse.json(safeSerialize(coupons));
   } catch (error) {
     console.error(error);
     return NextResponse.json(
@@ -48,7 +57,7 @@ export async function POST(req: NextRequest) {
       })
       .executeTakeFirstOrThrow();
 
-    return NextResponse.json(result);
+    return NextResponse.json(safeSerialize(result));
   } catch (error) {
     console.error(error);
 
@@ -92,7 +101,7 @@ export async function PUT(req: NextRequest) {
       .where("id", "=", coupon.id)
       .executeTakeFirstOrThrow();
 
-    return NextResponse.json(result);
+    return NextResponse.json(safeSerialize(result));
   } catch (error) {
     console.error(error);
 
