@@ -61,7 +61,7 @@ export default function CompanyValues() {
   ];
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 py-16 px-4">
+    <div className="min-h-screen py-16 px-4">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <motion.div

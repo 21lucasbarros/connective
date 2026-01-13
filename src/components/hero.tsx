@@ -7,7 +7,7 @@ import ColorBar from "@/components/color-bar";
 
 export default function Hero() {
   return (
-    <section className="w-full bg-white py-20 relative">
+    <section className="w-full py-20 relative">
       <div className="max-w-7xl mx-auto pl-4 pr-6 md:pl-6 md:pr-6">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <motion.div
