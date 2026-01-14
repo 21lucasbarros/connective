@@ -12,9 +12,11 @@ import {
 } from "@/components/ui/sheet";
 import { ShoppingCart, Plus, Minus, X } from "lucide-react";
 import { useCart } from "@/lib/cart";
+import { useRouter } from "next/navigation";
 
 export default function CartSideBar() {
   const { cart, total, itemCount, updateQty, removeItem } = useCart();
+  const router = useRouter();
 
   return (
     <Sheet>
@@ -114,7 +116,10 @@ export default function CartSideBar() {
                 </span>
               </div>
 
-              <Button className="bg-[#8338ec] hover:bg-[#6b2fd0] text-white w-full h-11 rounded-lg font-medium transition-colors">
+              <Button
+                onClick={() => router.push("/checkout")}
+                className="bg-[#8338ec] hover:bg-[#6b2fd0] text-white w-full h-11 rounded-lg font-medium transition-colors"
+              >
                 Finalizar compra
               </Button>
             </div>

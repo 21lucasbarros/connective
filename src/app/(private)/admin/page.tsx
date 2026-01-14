@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import type { Coupon, AdminUser, Service } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -44,9 +45,9 @@ export default function AdminPage() {
     },
   ];
 
-  const [coupons, setCoupons] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
-  const [services, setServices] = useState<any[]>([]);
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
 
   useEffect(() => {
     fetchCoupons();
@@ -70,12 +71,12 @@ export default function AdminPage() {
     setServices(data.services ?? data ?? []);
   }
 
-  function isExpired(item: any) {
+  function isExpired(item: Coupon) {
     if (!item?.end_date) return false;
     return new Date(item.end_date) < new Date();
   }
 
-  function isActiveCoupon(item: any) {
+  function isActiveCoupon(item: Coupon) {
     return !isExpired(item) && Boolean(item?.is_active);
   }
 

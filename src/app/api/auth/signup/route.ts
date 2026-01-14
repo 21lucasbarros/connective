@@ -3,7 +3,7 @@ import { hash } from "bcryptjs";
 
 export async function POST(request: Request) {
   try {
-    const { name, email, password } = await request.json();
+    const { name, email, password, cpf, phone } = await request.json();
 
     // Verificar se usuário já existe
     const existing = await db
@@ -27,8 +27,10 @@ export async function POST(request: Request) {
         email,
         password: hashedPassword,
         role: "user",
+        cpf: cpf ?? null,
+        phone: phone ?? null,
       })
-      .returning(["id", "name", "email"])
+      .returning(["id", "name", "email", "cpf", "phone"])
       .executeTakeFirst();
 
     return Response.json(

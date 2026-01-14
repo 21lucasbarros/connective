@@ -1,4 +1,4 @@
-import { User, LogOut, Home, MapPin, UserCog } from "lucide-react";
+import { User, LogOut, Home, UserCog } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -76,8 +76,10 @@ export default function UserMenu() {
         <DropdownMenuItem onClick={() => (window.location.href = "/")}>
           <Home className="w-4 h-4" /> Início
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => (window.location.href = "/enderecos")}>
-          <MapPin className="w-4 h-4" /> Endereços
+        <DropdownMenuItem
+          onClick={() => (window.location.href = "/editar-dados")}
+        >
+          <User className="w-4 h-4" /> Editar dados
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} variant="destructive">
