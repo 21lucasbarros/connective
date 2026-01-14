@@ -22,7 +22,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16 md:h-20 relative">
           <div className="shrink-0">
             <a href="/" className="flex items-center">
-              <h1 className="font-bold text-2xl md:text-3xl text-(--color-roxo)">
+              <h1 className="font-roboto font-bold text-2xl md:text-3xl text-(--color-roxo)">
                 Connective
               </h1>
             </a>

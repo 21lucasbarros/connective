@@ -8,7 +8,7 @@ export default function Hero() {
     <section className="relative px-4 sm:px-6 md:px-12 lg:px-20 py-8 md:py-10 flex flex-col md:flex-row items-center justify-between gap-8 bg-white overflow-hidden">
       <div className="flex-1 flex flex-col gap-5 max-w-full md:max-w-xl z-10 text-center md:text-left">
         <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-4xl font-light leading-tight relative wrap-break-word">
-          <span className="text-(--color-roxo)">
+          <span className="--font-roboto text-(--color-roxo)">
             Serviços <span className="font-bold">criativos</span> que
           </span>
           <br />

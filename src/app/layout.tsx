@@ -1,13 +1,25 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Open_Sans, Roboto_Condensed, Bebas_Neue } from "next/font/google";
 import { CartProvider } from "@/lib/cart";
 import { AuthProvider } from "@/lib/auth";
 
-const inter = Inter({
-  variable: "--font-inter",
+const openSans = Open_Sans({
+  variable: "--font-open-sans",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
+});
+
+const robotoCondensed = Roboto_Condensed({
+  variable: "--font-roboto-condensed",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const bebasNeue = Bebas_Neue({
+  variable: "--font-bebas-neue",
+  subsets: ["latin"],
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
@@ -22,7 +34,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
-      <body className={`${inter.variable} antialiased`}>
+      <body
+        className={`${openSans.variable} ${robotoCondensed.variable} ${bebasNeue.variable} antialiased`}
+      >
         <AuthProvider>
           <CartProvider>{children}</CartProvider>
         </AuthProvider>

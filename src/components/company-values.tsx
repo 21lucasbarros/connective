@@ -82,11 +82,12 @@ export default function CompanyValues() {
               ease: [0.22, 1, 0.36, 1],
             }}
           >
-            Missão, <span className="text-purple-600">Visão</span> e Valores
+            Missão, <span className="font-roboto text-purple-600">Visão</span> e
+            Valores
           </motion.h1>
 
           <motion.div
-            className="w-32 h-1 bg-linear-to-r from-purple-400 via-pink-400 to-orange-400 mx-auto rounded-full"
+            className="w-30 h-1 bg-linear-to-r from-purple-400 via-pink-400 to-orange-400 mx-auto rounded-full"
             initial={{ opacity: 0, scale: 0.98 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -113,16 +114,16 @@ export default function CompanyValues() {
               </div>
               <p className="text-lg text-gray-700 leading-relaxed mb-4">
                 Conectar{" "}
-                <span className="font-semibold text-purple-600">
+                <span className="font-roboto font-semibold text-purple-600">
                   marcas à sua essência
                 </span>{" "}
                 por meio de{" "}
-                <span className="font-semibold text-purple-600">
+                <span className="font-roboto font-semibold text-purple-600">
                   estratégia, criatividade e identidade visual
                 </span>
                 , ajudando empresas a se posicionarem com clareza, propósito e
                 consistência no{" "}
-                <span className="font-semibold text-purple-600">
+                <span className="font-roboto font-semibold text-purple-600">
                   ambiente digital
                 </span>
                 .

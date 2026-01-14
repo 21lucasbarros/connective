@@ -13,7 +13,7 @@ export default function About() {
           transition={{ duration: 0.7 }}
         >
           Quem está por trás da{" "}
-          <span className="text-purple-700">Connective</span>
+          <span className="font-roboto text-purple-700">Connective</span>
         </motion.h2>
 
         <div className="grid md:grid-cols-2 gap-8 mb-12">
@@ -47,7 +47,7 @@ export default function About() {
                 Ana Beatriz
               </motion.h3>
               <motion.p
-                className="text-purple-600 font-semibold mb-4"
+                className="font-roboto text-purple-600 font-semibold mb-4"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -88,7 +88,7 @@ export default function About() {
                 Clara
               </motion.h3>
               <motion.p
-                className="text-purple-600 font-semibold mb-4"
+                className="font-roboto text-purple-600 font-semibold mb-4"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}

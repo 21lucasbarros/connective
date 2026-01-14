@@ -26,7 +26,8 @@ export default function HowItWorks() {
   return (
     <section className="py-10 px-2 sm:px-4 md:px-8 lg:px-20 xl:px-32 2xl:px-64 bg-white text-center">
       <h2 className="text-3xl sm:text-4xl md:text-4xl font-semibold mb-12 text-[#1a1a1a]">
-        Como <span className="font-bold text-[#8338ec]">Funciona</span>
+        Como{" "}
+        <span className="--font-roboto font-bold text-[#8338ec]">Funciona</span>
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 justify-center items-start">

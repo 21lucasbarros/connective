@@ -58,12 +58,15 @@ export default function Services() {
     <section className="py-16 px-4 sm:px-6 md:px-8 lg:px-20 xl:px-32 2xl:px-64 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl sm:text-4xl md:text-4xl font-semibold mb-12 text-center text-[#1a1a1a]">
-          Nossos <span className="font-bold text-[#8338ec]">Serviços</span>
+          Nossos{" "}
+          <span className="--font-roboto font-bold text-[#8338ec]">
+            Serviços
+          </span>
         </h2>
 
         {loading ? (
           <div className="text-center py-12">
-            <Spinner className="mx-auto w-12 h-12 text-[#8338ec]" />
+            <Spinner className="--font-roboto mx-auto w-12 h-12 text-[#8338ec]" />
             <p className="mt-4 text-gray-600">Carregando serviços...</p>
 
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">

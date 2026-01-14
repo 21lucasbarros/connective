@@ -14,7 +14,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-3 gap-12 mb-10">
           {/* Sobre */}
           <div>
-            <h2 className="text-3xl font-bold text-[#8338ec] mb-4">
+            <h2 className="font-roboto text-3xl font-bold text-purple-600 mb-4">
               Connective
             </h2>
             <p className="text-gray-700 text-sm mb-6 leading-relaxed">
@@ -114,7 +114,7 @@ export default function Footer() {
               href="https://vpotech.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#8338ec] hover:text-[#fc5735] font-semibold transition-colors"
+              className="font-roboto text-[#8338ec] hover:text-[#fc5735] font-semibold transition-colors"
             >
               VPO Tech
             </a>
