@@ -1,4 +1,3 @@
-"use client";
 import type { ChangeEvent } from "react";
 import type { CartItem } from "@/lib/cart";
 import type { Coupon } from "@/lib/types";
