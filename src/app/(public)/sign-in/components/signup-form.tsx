@@ -29,7 +29,8 @@ function validateCPFValue(raw?: string) {
 
 const signupSchema = z
   .object({
-    name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
+    first_name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
+    last_name: z.string().min(2, "Sobrenome deve ter pelo menos 2 caracteres"),
     email: z.string().email("Email inválido"),
     password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
     confirmPassword: z.string(),
@@ -65,7 +66,8 @@ export function SignupForm({ onErrorAction }: SignupFormProps) {
   } = useForm<SignupForm>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
-      name: "",
+      first_name: "",
+      last_name: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -81,7 +83,7 @@ export function SignupForm({ onErrorAction }: SignupFormProps) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: values.name,
+          name: `${values.first_name} ${values.last_name}`,
           email: values.email,
           password: values.password,
           phone: values.phone,
@@ -134,16 +136,34 @@ export function SignupForm({ onErrorAction }: SignupFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium mb-1">Nome</label>
-        <input
-          {...register("name")}
-          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-(--color-roxo)"
-          aria-invalid={!!errors.name}
-        />
-        {errors.name && (
-          <p className="text-sm text-destructive mt-1">{errors.name.message}</p>
-        )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1">Nome</label>
+          <input
+            {...register("first_name")}
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-(--color-roxo)"
+            aria-invalid={!!errors.first_name}
+          />
+          {errors.first_name && (
+            <p className="text-sm text-destructive mt-1">
+              {errors.first_name.message}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">Sobrenome</label>
+          <input
+            {...register("last_name")}
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-(--color-roxo)"
+            aria-invalid={!!errors.last_name}
+          />
+          {errors.last_name && (
+            <p className="text-sm text-destructive mt-1">
+              {errors.last_name.message}
+            </p>
+          )}
+        </div>
       </div>
 
       <div>
