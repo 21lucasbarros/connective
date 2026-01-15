@@ -21,8 +21,6 @@ export type CouponInput = Omit<
 type BaseUser = {
   id: number;
   name: string;
-  first_name?: string | null;
-  last_name?: string | null;
   email: string;
   phone?: string | null;
   cpf?: string | null;
