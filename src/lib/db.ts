@@ -20,6 +20,8 @@ export interface UserTable {
   id: Generated<number>;
   name: string;
   password: string;
+  cpf?: string | null;
+  phone?: string | null;
   email: string;
   role?: string | null;
   created_at: ColumnType<Date, string | undefined, never>;

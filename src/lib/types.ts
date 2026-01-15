@@ -18,14 +18,22 @@ export type CouponInput = Omit<
   "id" | "used_count" | "created_at" | "updated_at"
 >;
 
-export type AdminUser = {
+type BaseUser = {
   id: number;
   name: string;
+  first_name?: string | null;
+  last_name?: string | null;
   email: string;
+  phone?: string | null;
+  cpf?: string | null;
   role?: string | null;
-  created_at?: string;
-  updated_at?: string;
+  created_at?: string | null;
+  updated_at?: string | null;
 };
+
+export type User = BaseUser;
+
+export type AdminUser = BaseUser & { role: string };
 
 export type Service = {
   id: number;

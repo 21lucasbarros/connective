@@ -16,10 +16,10 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 interface LoginFormProps {
-  onError: (error: string) => void;
+  onErrorAction: (error: string) => void;
 }
 
-export function LoginForm({ onError }: LoginFormProps) {
+export function LoginForm({ onErrorAction }: LoginFormProps) {
   const router = useRouter();
   const {
     register,
@@ -32,7 +32,7 @@ export function LoginForm({ onError }: LoginFormProps) {
 
   async function onSubmit(values: LoginForm) {
     try {
-      onError("");
+      onErrorAction("");
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -42,7 +42,7 @@ export function LoginForm({ onError }: LoginFormProps) {
       const data = await res.json();
 
       if (!res.ok) {
-        onError(data.error || "Erro ao fazer login");
+        onErrorAction(data.error || "Erro ao fazer login");
         return;
       }
 
@@ -53,7 +53,7 @@ export function LoginForm({ onError }: LoginFormProps) {
       }`;
       router.push("/");
     } catch (error) {
-      onError("Erro ao conectar ao servidor");
+      onErrorAction("Erro ao conectar ao servidor");
     }
   }
 

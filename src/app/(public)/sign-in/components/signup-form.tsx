@@ -96,7 +96,6 @@ export function SignupForm({ onErrorAction }: SignupFormProps) {
         return;
       }
 
-      // Salvar em localStorage e cookie
       localStorage.setItem("user", JSON.stringify(data.user));
       document.cookie = `user=${JSON.stringify(data.user)}; path=/; max-age=${
         60 * 60 * 24 * 7
@@ -107,7 +106,6 @@ export function SignupForm({ onErrorAction }: SignupFormProps) {
     }
   }
 
-  // Helpers to format inputs
   const formatPhone = (value = "") => {
     const digits = value.replace(/\D/g, "");
     if (!digits) return "";

@@ -27,9 +27,9 @@ export default function SignInPage() {
         )}
 
         {isLogin ? (
-          <LoginForm onError={setErrorMessage} />
+          <LoginForm onErrorAction={setErrorMessage} />
         ) : (
-          <SignupForm onError={setErrorMessage} />
+          <SignupForm onErrorAction={setErrorMessage} />
         )}
 
         <div className="mt-6 text-center text-sm">
