@@ -38,8 +38,8 @@ const decorVariant = {
 
 export default function Hero() {
   return (
-    <section className="relative min-h-150 sm:min-h-162.5 md:min-h-175 lg:min-h-187.5 xl:min-h-200 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-20 py-12 md:py-16 lg:py-20 xl:py-24 flex items-center bg-linear-to-br from-gray-50 via-purple-50/20 to-orange-50/10 overflow-hidden">
-      <div className="absolute right-0 top-0 bottom-0 w-full md:w-[55%] lg:w-[50%] xl:w-[48%]">
+    <section className="relative min-h-screen md:min-h-175 lg:min-h-187.5 xl:min-h-200 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-20 py-8 md:py-16 lg:py-20 xl:py-24 flex flex-col md:flex-row md:items-center bg-linear-to-br from-gray-50 via-purple-50/20 to-orange-50/10 overflow-hidden">
+      <div className="absolute right-0 top-0 bottom-0 w-full md:w-[55%] lg:w-[50%] xl:w-[48%] hidden md:block">
         <div className="relative w-full h-full">
           <div
             className="absolute inset-0 z-0"
@@ -95,16 +95,16 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="relative z-20 w-full max-w-7xl mx-auto">
+      <div className="relative z-20 w-full max-w-7xl mx-auto md:mb-0 mb-8">
         <motion.div
-          className="flex flex-col gap-6 max-w-full md:max-w-lg lg:max-w-xl xl:max-w-2xl"
+          className="flex flex-col gap-4 md:gap-6 max-w-full md:max-w-lg lg:max-w-xl xl:max-w-2xl"
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
         >
-          <motion.h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-light leading-[1.15] relative">
-            <motion.span className="block mb-1 sm:mb-2" variants={fadeUp}>
+          <motion.h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light leading-[1.15] relative">
+            <motion.span className="block mb-1" variants={fadeUp}>
               <span className="text-purple-600">Serviços </span>
               <span className="font-bold text-purple-600">criativos</span>
               <span className="text-purple-600"> que</span>
@@ -137,7 +137,7 @@ export default function Hero() {
           </motion.h1>
 
           <motion.p
-            className="text-base sm:text-lg md:text-xl text-gray-600 leading-relaxed max-w-lg"
+            className="text-sm sm:text-base md:text-xl text-gray-600 leading-relaxed max-w-lg"
             variants={fadeUp}
           >
             Branding, identidade visual e estratégia com atendimento humano e
@@ -145,11 +145,11 @@ export default function Hero() {
           </motion.p>
 
           <motion.div
-            className="flex flex-col sm:flex-row gap-4 mt-4"
+            className="flex flex-col sm:flex-row gap-3 md:gap-4 mt-2 md:mt-4"
             variants={fadeUp}
           >
             <Button
-              className="group bg-orange-500 hover:bg-orange-600 text-white text-base font-semibold px-8 py-6 rounded-lg shadow-lg shadow-orange-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/40 hover:-translate-y-1"
+              className="group bg-orange-500 hover:bg-orange-600 text-white text-sm md:text-base font-semibold px-6 md:px-8 py-5 md:py-6 rounded-lg shadow-lg shadow-orange-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/40 hover:-translate-y-1"
               type="button"
             >
               Contratar um serviço
@@ -169,7 +169,7 @@ export default function Hero() {
             </Button>
 
             <Button
-              className="group bg-purple-600 hover:bg-purple-700 text-white text-base font-semibold px-8 py-6 rounded-lg shadow-lg shadow-purple-600/30 transition-all duration-300 hover:shadow-xl hover:shadow-purple-600/40 hover:-translate-y-1"
+              className="group bg-purple-600 hover:bg-purple-700 text-white text-sm md:text-base font-semibold px-6 md:px-8 py-5 md:py-6 rounded-lg shadow-lg shadow-purple-600/30 transition-all duration-300 hover:shadow-xl hover:shadow-purple-600/40 hover:-translate-y-1"
               type="button"
             >
               Falar com a Connective
@@ -224,6 +224,38 @@ export default function Hero() {
           </motion.div>
         </motion.div>
       </div>
+
+      <motion.div
+        className="block md:hidden w-full relative z-20"
+        variants={imageVariant}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.2 }}
+      >
+        <div className="relative w-full rounded-2xl overflow-hidden shadow-xl">
+          <motion.img
+            src="/assets/connective.jpg"
+            alt="Ana Beatriz Salviano e Clara, fundadoras da Connective"
+            className="w-full h-112.5 sm:h-125 object-cover object-center"
+          />
+
+          <div className="absolute right-4 bottom-4 z-30">
+            <div className="bg-white/95 backdrop-blur-md rounded-xl px-4 py-3 shadow-xl border border-white/20">
+              <div className="flex items-center gap-3">
+                <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse" />
+                <div>
+                  <p className="text-xs font-semibold text-gray-800">
+                    Fundadoras da Connective
+                  </p>
+                  <p className="text-[10px] text-gray-500">
+                    Ana Beatriz & Clara
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
 
       <motion.div
         className="hidden lg:block absolute bottom-20 xl:bottom-24 right-8 xl:right-12 z-20"
