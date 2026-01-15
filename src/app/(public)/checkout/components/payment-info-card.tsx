@@ -10,52 +10,56 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CreditCard, Lock } from "lucide-react";
+import { initMercadoPago } from "@mercadopago/sdk-react";
+import { Payment } from "@mercadopago/sdk-react";
+import { ComponentProps } from "react";
+import { promises } from "dns";
 
-export default function PaymentInfoCard() {
+type Props = {
+  total: number;
+};
+
+export default function PaymentInfoCard({ total }: Props) {
+  const initialization: ComponentProps<typeof Payment>["initialization"] = {
+    amount: total,
+    preferenceId: "YOUR_PREFERENCE_ID",
+  };
+
+  const customization: ComponentProps<typeof Payment>["customization"] = {
+    paymentMethods: {
+      atm: "all",
+      ticket: "all",
+      bankTransfer: ["pix"],
+      creditCard: "all",
+      prepaidCard: "all",
+      mercadoPago: "all",
+      maxInstallments: 2,
+    },
+    visual: {
+      hidePaymentButton: true,
+    },
+  };
+
+  const onError: ComponentProps<typeof Payment>["onError"] = async (error) => {
+    console.log(error);
+  };
+
+  const onReady = async () => {};
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <CreditCard className="w-5 h-5" />
-          Informações de Pagamento
-        </CardTitle>
-        <CardDescription>
-          Seus dados estão seguros e criptografados
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="cardNumber">Número do Cartão</Label>
-          <Input
-            id="cardNumber"
-            placeholder="0000 0000 0000 0000"
-            maxLength={19}
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="cardName">Nome no Cartão</Label>
-          <Input id="cardName" placeholder="Nome impresso no cartão" />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="expiry">Validade</Label>
-            <Input id="expiry" placeholder="MM/AA" maxLength={5} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="cvv">CVV</Label>
-            <Input id="cvv" placeholder="000" maxLength={4} type="password" />
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
-          <Lock className="w-4 h-4 text-green-600" />
-          <p className="text-sm text-gray-600">
-            Pagamento 100% seguro e criptografado
-          </p>
-        </div>
-      </CardContent>
+      <Payment
+        initialization={initialization}
+        customization={customization}
+        onSubmit={async (PaymantFormData, IAdditionalCardFormData) => {
+          console.log(PaymantFormData, IAdditionalCardFormData);
+        }}
+        onReady={async () => {
+          console.log("Done");
+        }}
+        onError={async (IBrickError) => {
+          console.log(IBrickError);
+        }}
+      />
     </Card>
   );
 }

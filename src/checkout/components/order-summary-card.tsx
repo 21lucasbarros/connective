@@ -36,15 +36,6 @@ export default function OrderSummaryCard({
   discount,
   total,
 }: Props) {
-  function createPayment() {
-    /*@ts-expect-error */
-    window.paymentBrickController
-      .getFormData()
-      .then((FormData: any) => {
-        console.log("FormData received, creating payment...", FormData);
-      })
-      .catch((error: any) => console.log(error));
-  }
   return (
     <Card className="sticky top-4">
       <CardHeader>
@@ -150,18 +141,15 @@ export default function OrderSummaryCard({
               <p className="text-2xl font-bold text-[#8338ec]">
                 R$ {total.toFixed(2)}
               </p>
-              {/* <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500">
                 ou 12x de R$ {(total / 12).toFixed(2)}
-              </p> */}
+              </p>
             </div>
           </div>
         </div>
       </CardContent>
       <CardFooter className="flex-col gap-3">
-        <Button
-          onClick={() => createPayment()}
-          className="w-full bg-[#8338ec] hover:bg-[#6d28d9] text-white h-12 text-lg"
-        >
+        <Button className="w-full bg-[#8338ec] hover:bg-[#6d28d9] text-white h-12 text-lg">
           <Lock className="w-4 h-4 mr-2" />
           Finalizar Compra
         </Button>

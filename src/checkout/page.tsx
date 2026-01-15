@@ -8,11 +8,6 @@ import PersonalInfoCard from "./components/personal-info-card";
 import PaymentInfoCard from "./components/payment-info-card";
 import OrderSummaryCard from "./components/order-summary-card";
 import GuaranteeCard from "./components/guarantee-card";
-import { initMercadoPago } from "@mercadopago/sdk-react";
-
-initMercadoPago(process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY!, {
-  locale: "pt-BR",
-});
 
 export default function Checkout() {
   const [couponCode, setCouponCode] = useState("");
@@ -110,7 +105,7 @@ export default function Checkout() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          {/* <PersonalInfoCard
+          <PersonalInfoCard
             firstName={firstName}
             setFirstName={setFirstName}
             lastName={lastName}
@@ -121,9 +116,9 @@ export default function Checkout() {
             setPhone={setPhone}
             cpf={cpf}
             setCpf={setCpf}
-          /> */}
+          />
 
-          <PaymentInfoCard total={total} />
+          <PaymentInfoCard />
         </div>
 
         <div className="lg:col-span-1">
