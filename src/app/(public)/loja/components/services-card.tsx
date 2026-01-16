@@ -2,6 +2,8 @@
 
 import { Check } from "lucide-react";
 import { useCart } from "@/lib/cart";
+import { useState } from "react";
+import { motion } from "framer-motion";
 
 type ServiceCardProps = {
   name: string;
@@ -21,6 +23,7 @@ export default function ServicesCard({
   features = [],
 }: ServiceCardProps) {
   const { addItem } = useCart();
+  const [loading, setLoading] = useState(false);
 
   const parseNumericPrice = () => {
     if (price === undefined || price === null) return 0;
@@ -33,9 +36,15 @@ export default function ServicesCard({
     return isNaN(n) ? 0 : n;
   };
 
-  const handleAdd = () => {
-    const numeric = parseNumericPrice();
-    addItem({ id: name, name, price: numeric, color, features });
+  const handleAdd = async () => {
+    setLoading(true);
+    try {
+      const numeric = parseNumericPrice();
+      await new Promise((resolve) => setTimeout(resolve, 700)); // Simula delay
+      addItem({ id: name, name, price: numeric, color, features });
+    } finally {
+      setLoading(false);
+    }
   };
   const formatPrice = () => {
     if (price !== undefined && price !== null) {
@@ -56,8 +65,16 @@ export default function ServicesCard({
   };
 
   return (
-    <div className="rounded-2xl overflow-hidden shadow-lg flex flex-col bg-white hover:shadow-xl transition-shadow duration-300">
-      <div
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="rounded-2xl overflow-hidden shadow-lg flex flex-col bg-white hover:shadow-xl transition-shadow duration-300"
+    >
+      <motion.div
+        initial={{ scale: 1 }}
+        whileHover={{ scale: 1.03 }}
+        transition={{ type: "spring", stiffness: 200, damping: 15 }}
         className="h-40 w-full p-6 flex flex-col justify-center relative"
         style={{ backgroundColor: color }}
       >
@@ -75,7 +92,7 @@ export default function ServicesCard({
             <rect x="50" y="60" width="20" height="30" fill="white" />
           </svg>
         </div>
-      </div>
+      </motion.div>
 
       <div className="p-6 flex-1 flex flex-col justify-between">
         <div>
@@ -104,14 +121,41 @@ export default function ServicesCard({
           )}
         </div>
 
-        <button
-          className="w-full py-3.5 px-6 rounded-lg font-bold text-white text-base transition-all duration-300 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98]"
+        <motion.button
+          className="w-full py-3.5 px-6 rounded-lg font-bold text-white text-base transition-all duration-300 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
           style={{ backgroundColor: color }}
           onClick={handleAdd}
+          whileTap={{ scale: 0.97 }}
+          disabled={loading}
         >
-          Contratar
-        </button>
+          {loading ? (
+            <span className="flex items-center gap-2">
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                />
+              </svg>
+              Carregando...
+            </span>
+          ) : (
+            "Contratar"
+          )}
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 }

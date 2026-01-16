@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import ServicesCard from "./services-card";
 import { Spinner } from "@/components/ui/spinner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { motion, AnimatePresence } from "framer-motion";
 
 type ServicePublic = {
   id?: number | string;
@@ -55,7 +56,7 @@ export default function Services() {
   }, []);
 
   return (
-    <section className="py-16 px-4 sm:px-6 md:px-8 lg:px-20 xl:px-32 2xl:px-64 bg-gray-50">
+    <section className="py-16 px-4 sm:px-6 md:px-8 lg:px-20 xl:px-32 2xl:px-64 bg-linear-to-br from-blue-50 via-purple-50 to-pink-50">
       <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl sm:text-4xl md:text-4xl font-semibold mb-12 text-center text-[#1a1a1a]">
           Nossos{" "}
@@ -107,17 +108,26 @@ export default function Services() {
           </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-            {services.map((service, index) => (
-              <ServicesCard
-                key={service.id ?? `${service.name}-${index}`}
-                name={service.name}
-                description={service.description}
-                price={service.price}
-                formatted_price={service.formatted_price}
-                color={service.color || assignColor(index)}
-                features={service.features}
-              />
-            ))}
+            <AnimatePresence>
+              {services.map((service, index) => (
+                <motion.div
+                  key={service.id ?? `${service.name}-${index}`}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 30 }}
+                  transition={{ duration: 0.4, delay: index * 0.08 }}
+                >
+                  <ServicesCard
+                    name={service.name}
+                    description={service.description}
+                    price={service.price}
+                    formatted_price={service.formatted_price}
+                    color={service.color || assignColor(index)}
+                    features={service.features}
+                  />
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         )}
       </div>

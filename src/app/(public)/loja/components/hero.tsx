@@ -38,7 +38,7 @@ const decorVariant = {
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen md:min-h-175 lg:min-h-187.5 xl:min-h-200 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-20 py-8 md:py-16 lg:py-20 xl:py-24 flex flex-col md:flex-row md:items-center bg-linear-to-br from-gray-50 via-purple-50/20 to-orange-50/10 overflow-hidden">
+    <section className="relative min-h-screen md:min-h-175 lg:min-h-187.5 xl:min-h-200 px-4 sm:px-6 md:px-8 lg:px-12 xl:px-20 py-8 md:py-16 lg:py-20 xl:py-24 flex flex-col md:flex-row md:items-center bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 overflow-hidden">
       <div className="absolute right-0 top-0 bottom-0 w-full md:w-[55%] lg:w-[50%] xl:w-[48%] hidden md:block">
         <div className="relative w-full h-full">
           <div
