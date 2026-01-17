@@ -9,6 +9,8 @@ import PaymentInfoCard from "./components/payment-info-card";
 import OrderSummaryCard from "./components/order-summary-card";
 import GuaranteeCard from "./components/guarantee-card";
 import { initMercadoPago } from "@mercadopago/sdk-react";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 initMercadoPago(process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY!, {
   locale: "pt-BR",
@@ -99,18 +101,28 @@ export default function Checkout() {
 
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold mb-2 text-[#8338ec]">
-          Finalizar Compra
-        </h1>
-        <p className="text-gray-600">
-          Revise seu pedido e complete suas informações para concluir a compra
-        </p>
+      <div className="mb-8 flex items-center gap-4">
+        <Button
+          variant="ghost"
+          className="mb-4 -ml-2 text-gray-600 hover:text-[#8338ec]"
+          onClick={() => window.history.back()}
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Voltar
+        </Button>
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-[#8338ec]">
+            Finalizar Compra
+          </h1>
+          <p className="text-gray-600">
+            Revise seu pedido e complete suas informações para concluir a compra
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          {/* <PersonalInfoCard
+          <PersonalInfoCard
             firstName={firstName}
             setFirstName={setFirstName}
             lastName={lastName}
@@ -121,7 +133,7 @@ export default function Checkout() {
             setPhone={setPhone}
             cpf={cpf}
             setCpf={setCpf}
-          /> */}
+          />
 
           <PaymentInfoCard total={total} />
         </div>

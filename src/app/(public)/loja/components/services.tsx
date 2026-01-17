@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import ServicesCard from "./services-card";
 import { Spinner } from "@/components/ui/spinner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,17 +16,21 @@ type ServicePublic = {
   features?: string[];
 };
 
-// Paleta de cores da marca
-const BRAND_COLORS = ["#fc5735", "#8338ec", "#43bccd", "#43bccd", "#fffcf9"];
-
-// Função para atribuir cores ciclicamente
-const assignColor = (index: number): string => {
-  return BRAND_COLORS[index % BRAND_COLORS.length];
-};
+// Paleta de cores da marca (ordem será embaralhada)
+const BRAND_COLORS = ["#fc5735", "#8338ec", "#43bccd"];
 
 export default function Services() {
   const [services, setServices] = useState<ServicePublic[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const shuffledColors = useMemo(() => {
+    const arr = [...BRAND_COLORS];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -36,10 +40,10 @@ export default function Services() {
         const data = await res.json();
         let list = data?.services ?? data ?? [];
 
-        // Atribui cores aos serviços que não possuem
+        // Atribui cores aos serviços que não possuem (usando ordem aleatória)
         list = list.map((service: ServicePublic, index: number) => ({
           ...service,
-          color: service.color || assignColor(index),
+          color: service.color || shuffledColors[index % shuffledColors.length],
         }));
 
         if (mounted) setServices(list);
@@ -122,7 +126,10 @@ export default function Services() {
                     description={service.description}
                     price={service.price}
                     formatted_price={service.formatted_price}
-                    color={service.color || assignColor(index)}
+                    color={
+                      service.color ||
+                      shuffledColors[index % shuffledColors.length]
+                    }
                     features={service.features}
                   />
                 </motion.div>
