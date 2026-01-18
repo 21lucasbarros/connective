@@ -221,7 +221,7 @@ export default function Hero() {
                     Fundadoras da Connective
                   </p>
                   <p className="text-[10px] text-gray-500">
-                    Ana Beatriz & Clara
+                    Ana Beatriz Salviano & Clara Torres
                   </p>
                 </div>
               </div>
@@ -245,7 +245,7 @@ export default function Hero() {
                 Fundadoras da Connective
               </p>
               <p className="text-[10px] xl:text-xs text-gray-500">
-                Ana Beatriz & Clara
+                Ana Beatriz Salviano & Clara Torres
               </p>
             </div>
           </div>
