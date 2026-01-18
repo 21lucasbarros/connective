@@ -72,13 +72,13 @@ export default function HowItWorks() {
           return (
             <motion.div
               key={index}
-              className="flex flex-col items-center text-center md:items-center md:text-center mb-0 bg-[#fffcf9] shadow-md rounded-xl p-6 min-h-55 min-w-65 w-full"
+              className="flex flex-col items-center text-center mb-0 bg-[#fffcf9] shadow-md rounded-xl p-6 min-h-55 min-w-65 w-full"
               variants={cardVariants}
               whileHover={{ scale: 1.03 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
               <motion.div
-                className="flex items-center justify-center w-12 h-12 mb-4 md:mb-0 md:mr-6 rounded-full"
+                className="flex items-center justify-center w-12 h-12 mb-4 rounded-full"
                 style={{ background: bgColor }}
                 variants={iconVariants}
               >
@@ -86,9 +86,7 @@ export default function HowItWorks() {
               </motion.div>
               <div>
                 <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-                <p className="text-gray-600 max-w-md mx-auto md:mx-0">
-                  {step.description}
-                </p>
+                <p className="text-gray-600 max-w-md">{step.description}</p>
               </div>
             </motion.div>
           );

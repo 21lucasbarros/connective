@@ -109,7 +109,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-600">
           <p>© {currentYear} Connective. Todos os direitos reservados.</p>
           <p>
-            Feito por{" "}
+            Site desenvolvido por{" "}
             <a
               href="https://vpotech.vercel.app"
               target="_blank"
