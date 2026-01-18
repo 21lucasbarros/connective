@@ -104,35 +104,8 @@ export default function Hero() {
           viewport={{ once: true, amount: 0.2 }}
         >
           <motion.h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light leading-[1.15] relative">
-            <motion.span className="block mb-1" variants={fadeUp}>
-              <span className="text-purple-600">Serviços </span>
-              <span className="font-bold text-purple-600">criativos</span>
-              <span className="text-purple-600"> que</span>
-            </motion.span>
-            <motion.span className="block" variants={fadeUp}>
-              <span className="font-bold text-orange-500 relative inline-block">
-                conectam marcas
-                <svg
-                  className="absolute -bottom-1 sm:-bottom-2 left-0 w-full"
-                  viewBox="0 0 300 12"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M2 10C50 5 100 2 150 3C200 4 250 7 298 10"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    className="text-orange-400/60"
-                  />
-                </svg>
-              </span>
-            </motion.span>
-            <motion.span
-              className="block mt-1 sm:mt-2 text-gray-800"
-              variants={fadeUp}
-            >
-              à sua essência
+            <motion.span className="block text-[#8338ec]" variants={fadeUp}>
+              Criatividade que une, transforma e dá resultado.
             </motion.span>
           </motion.h1>
 
