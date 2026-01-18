@@ -114,16 +114,16 @@ export default function CompanyValues() {
               </div>
               <p className="text-lg text-gray-700 leading-relaxed mb-4">
                 Conectar{" "}
-                <span className="font-roboto font-semibold text-purple-600">
+                <span className="font-semibold text-purple-600">
                   marcas à sua essência
                 </span>{" "}
                 por meio de{" "}
-                <span className="font-roboto font-semibold text-purple-600">
+                <span className="font-semibold text-purple-600">
                   estratégia, criatividade e identidade visual
                 </span>
                 , ajudando empresas a se posicionarem com clareza, propósito e
                 consistência no{" "}
-                <span className="font-roboto font-semibold text-purple-600">
+                <span className="font-semibold text-purple-600">
                   ambiente digital
                 </span>
                 .
@@ -184,7 +184,7 @@ export default function CompanyValues() {
           </div>
 
           <motion.div
-            className="grid md:grid-cols-2 gap-6"
+            className="grid md:grid-cols-2 gap-6 items-stretch"
             initial="hidden"
             whileInView="show"
             viewport={{ once: true }}
@@ -198,6 +198,7 @@ export default function CompanyValues() {
               return (
                 <motion.div
                   key={index}
+                  className="h-full"
                   variants={{
                     hidden: { opacity: 0, y: 6 },
                     show: {
@@ -207,8 +208,8 @@ export default function CompanyValues() {
                     },
                   }}
                 >
-                  <Card className="shadow-lg border-0 bg-white/80 backdrop-blur hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-                    <CardContent className="p-6">
+                  <Card className="h-full shadow-lg border-0 bg-white/80 backdrop-blur hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <CardContent className="p-6 h-full flex flex-col">
                       <div className="flex items-start gap-4">
                         <div
                           className={`p-2.5 bg-gray-100 rounded-lg ${value.color}`}

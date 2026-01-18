@@ -44,7 +44,7 @@ export default function About() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                Ana Beatriz
+                Ana Beatriz Salviano
               </motion.h3>
               <motion.p
                 className="font-roboto text-purple-600 font-semibold mb-4"
@@ -85,7 +85,7 @@ export default function About() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                Clara
+                Clara Torres
               </motion.h3>
               <motion.p
                 className="font-roboto text-purple-600 font-semibold mb-4"

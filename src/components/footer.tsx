@@ -18,7 +18,7 @@ export default function Footer() {
               Connective
             </h2>
             <p className="text-gray-700 text-sm mb-6 leading-relaxed">
-              Transformando ideias em soluções digitais e presença social.
+              Criatividade que une, transforma e da resultado!
             </p>
             <Button
               asChild
