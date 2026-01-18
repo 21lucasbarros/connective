@@ -22,7 +22,6 @@ type Props = {
 export default function PaymentInfoCard({ total }: Props) {
   const initialization: ComponentProps<typeof Payment>["initialization"] = {
     amount: total,
-    preferenceId: "YOUR_PREFERENCE_ID",
   };
 
   const customization: ComponentProps<typeof Payment>["customization"] = {
@@ -50,8 +49,9 @@ export default function PaymentInfoCard({ total }: Props) {
       <Payment
         initialization={initialization}
         customization={customization}
+        onBinChange={console.log}
         onSubmit={async (PaymantFormData, IAdditionalCardFormData) => {
-          console.log(PaymantFormData, IAdditionalCardFormData);
+          console.log("on submit", PaymantFormData, IAdditionalCardFormData);
         }}
         onReady={async () => {
           console.log("Done");
