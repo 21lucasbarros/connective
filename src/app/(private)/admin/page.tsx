@@ -15,6 +15,7 @@ import {
   Briefcase,
   LayoutDashboard,
 } from "lucide-react";
+import CouponsAlert from "./components/coupons-alert";
 
 export default function AdminPage() {
   const [tab, setTab] = useState<
@@ -164,6 +165,8 @@ export default function AdminPage() {
                   Bem-vindo ao painel administrativo
                 </p>
               </div>
+
+              <CouponsAlert coupons={coupons} />
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card className="bg-[#fc5735] rounded-xl text-white shadow-lg border-none">
