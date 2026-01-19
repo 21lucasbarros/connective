@@ -95,15 +95,15 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="relative z-20 w-full max-w-7xl mx-auto md:mb-0 mb-8">
+      <div className="relative z-20 w-full max-w-7xl mx-auto md:mb-0 mb-8 md:pr-8 lg:pr-12 xl:pr-16">
         <motion.div
-          className="flex flex-col gap-4 md:gap-6 max-w-full md:max-w-lg lg:max-w-xl xl:max-w-2xl"
+          className="flex flex-col gap-4 md:gap-6 max-w-full md:max-w-md lg:max-w-lg xl:max-w-xl"
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
         >
-          <motion.h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light leading-[1.15] relative">
+          <motion.h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-[1.15] relative">
             <motion.span className="block text-[#8338ec]" variants={fadeUp}>
               Criatividade que une, transforma e dá resultado.
             </motion.span>

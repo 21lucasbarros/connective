@@ -82,8 +82,7 @@ export default function CompanyValues() {
               ease: [0.22, 1, 0.36, 1],
             }}
           >
-            Missão, <span className="font-roboto text-purple-600">Visão</span> e
-            Valores
+            Missão, Visão e Valores
           </motion.h1>
 
           <motion.div
