@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -32,7 +33,16 @@ import {
   Edit,
   ChevronLeft,
   ChevronRight,
+  Plus,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import {
   Pagination,
   PaginationContent,
@@ -41,6 +51,7 @@ import {
   PaginationPrevious,
   PaginationNext,
 } from "@/components/ui/pagination";
+
 import { ConfirmationModal } from "@/components/ui/confirmation-modal";
 import { createCouponSchema } from "@/lib/validations/coupon";
 import { CreateCouponParams } from "@/app/api/coupons/route";
@@ -63,6 +74,7 @@ export default function Coupons() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [duplicateCode, setDuplicateCode] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [page, setPage] = useState(1);
   const pageSize = 6;
   const totalPages = Math.max(1, Math.ceil(coupons.length / pageSize));
@@ -75,7 +87,7 @@ export default function Coupons() {
     setValue,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<CreateCouponParams>({
+  } = useForm<CreateCouponParams & { noEndDate?: boolean }>({
     resolver: zodResolver(createCouponSchema) as Resolver<CreateCouponParams>,
     defaultValues: {
       code: "",
@@ -84,12 +96,14 @@ export default function Coupons() {
       minimumPurchaseValue: null,
       startDate: new Date().toISOString().split("T")[0],
       endDate: null,
+      noEndDate: false,
       maxUses: null,
     },
   });
 
   const discountType = watch("discountType");
   const endDate = watch("endDate");
+  const noEndDate = watch("noEndDate");
   const codeValue = watch("code");
 
   useEffect(() => {
@@ -105,7 +119,7 @@ export default function Coupons() {
     const exists = coupons.some(
       (coupon) =>
         coupon.code.toUpperCase() === codeValue.toUpperCase() &&
-        coupon.id !== editingId
+        coupon.id !== editingId,
     );
     setDuplicateCode(exists);
   }, [codeValue, coupons, editingId]);
@@ -131,15 +145,17 @@ export default function Coupons() {
     if (values.minimumPurchaseValue)
       formData.append(
         "minimumPurchaseValue",
-        values.minimumPurchaseValue.toString()
+        values.minimumPurchaseValue.toString(),
       );
 
     if (editingId) {
       formData.append("id", editingId.toString());
       await fetch("/api/coupons", { method: "PUT", body: formData });
       setEditingId(null);
+      setDialogOpen(false);
     } else {
       await fetch("/api/coupons", { method: "POST", body: formData });
+      setDialogOpen(false);
     }
 
     reset({
@@ -149,6 +165,7 @@ export default function Coupons() {
       minimumPurchaseValue: null,
       startDate: new Date().toISOString().split("T")[0],
       endDate: null,
+      noEndDate: false,
       maxUses: null,
     });
     fetchCoupons();
@@ -163,11 +180,13 @@ export default function Coupons() {
       "minimumPurchaseValue",
       coupon.minimum_purchase_value
         ? Number(coupon.minimum_purchase_value)
-        : null
+        : null,
     );
     setValue("startDate", coupon.start_date.split("T")[0]);
     setValue("endDate", coupon.end_date ? coupon.end_date.split("T")[0] : null);
+    setValue("noEndDate", coupon.end_date === null);
     setValue("maxUses", coupon.max_uses ?? null);
+    setDialogOpen(true);
   }
 
   async function onDelete(id: number) {
@@ -214,275 +233,331 @@ export default function Coupons() {
         confirmText="Excluir"
         cancelText="Cancelar"
       />
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent className="sm:max-w-3xl p-6">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl">
+              <Ticket className="size-5 text-[#f77f00]" />
+              {editingId ? "Editar Cupom" : "Novo Cupom"}
+            </DialogTitle>
+            <DialogDescription>
+              {editingId
+                ? "Atualize as informações do cupom"
+                : "Crie um novo código de desconto"}
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 py-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="code"
+                  className="text-sm font-medium text-[#333]"
+                >
+                  Código do Cupom
+                </Label>
+                <Input
+                  id="code"
+                  {...register("code")}
+                  placeholder="Ex: CONNECTIVE2026"
+                  className="border-[#e5e5e5] focus-visible:ring-[#f77f00]"
+                  aria-invalid={!!errors.code}
+                />
+                {errors.code && (
+                  <p className="text-xs text-[#fc5735]">
+                    {errors.code.message}
+                  </p>
+                )}
+                {duplicateCode && (
+                  <p className="text-xs text-[#fc5735]">Este cupom já existe</p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="discountType"
+                  className="text-sm font-medium text-[#333]"
+                >
+                  Tipo de Desconto
+                </Label>
+                <Select
+                  value={discountType}
+                  onValueChange={(value) =>
+                    setValue("discountType", value as "PERCENTAGE" | "FIXED")
+                  }
+                >
+                  <SelectTrigger className="border-[#e5e5e5] focus:ring-[#f77f00]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="PERCENTAGE">Percentual (%)</SelectItem>
+                    <SelectItem value="FIXED">Valor Fixo (R$)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="discountValue"
+                  className="text-sm font-medium text-[#333] flex items-center gap-1"
+                >
+                  {discountType === "PERCENTAGE" ? (
+                    <>
+                      <Percent className="size-3.5" />
+                      Desconto (%)
+                    </>
+                  ) : (
+                    <>Desconto (R$)</>
+                  )}
+                </Label>
+                <Controller
+                  control={control}
+                  name="discountValue"
+                  defaultValue={0}
+                  render={({ field }) => {
+                    const formatPercent = (val: number | undefined) =>
+                      typeof val === "number"
+                        ? `${val.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%`
+                        : "";
+
+                    const formatCurrency = (val: number | undefined) =>
+                      typeof val === "number"
+                        ? val.toLocaleString("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          })
+                        : "";
+
+                    return (
+                      <Input
+                        id="discountValue"
+                        inputMode="numeric"
+                        value={
+                          discountType === "PERCENTAGE"
+                            ? formatPercent(field.value)
+                            : formatCurrency(field.value)
+                        }
+                        onChange={(e) => {
+                          const digits = e.target.value.replace(/\D/g, "");
+                          const cents =
+                            digits === "" ? 0 : parseInt(digits, 10);
+                          const numberValue = cents / 100;
+                          field.onChange(numberValue);
+                        }}
+                        onBlur={field.onBlur}
+                        placeholder={
+                          discountType === "PERCENTAGE" ? "0,00%" : "R$ 0,00"
+                        }
+                        className="border-[#2e0202] focus-visible:ring-[#f77f00]"
+                        aria-invalid={!!errors.discountValue}
+                      />
+                    );
+                  }}
+                />
+                {errors.discountValue && (
+                  <p className="text-xs text-[#fc5735]">
+                    {errors.discountValue.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="minimumPurchaseValue"
+                  className="text-sm font-medium text-[#333]"
+                >
+                  Compra Mínima (R$) (opcional)
+                </Label>
+                <Controller
+                  control={control}
+                  name="minimumPurchaseValue"
+                  defaultValue={null}
+                  render={({ field }) => {
+                    const formatCurrency = (val: number | null | undefined) =>
+                      typeof val === "number"
+                        ? val.toLocaleString("pt-BR", {
+                            style: "currency",
+                            currency: "BRL",
+                          })
+                        : "";
+
+                    return (
+                      <Input
+                        id="minimumPurchaseValue"
+                        inputMode="numeric"
+                        value={formatCurrency(field.value)}
+                        onChange={(e) => {
+                          const digits = e.target.value.replace(/\D/g, "");
+                          if (digits === "") {
+                            field.onChange(null);
+                            return;
+                          }
+                          const cents = parseInt(digits, 10);
+                          const numberValue = cents / 100;
+                          field.onChange(numberValue);
+                        }}
+                        onBlur={field.onBlur}
+                        placeholder="R$ 0,00"
+                        className="border-[#e5e5e5] focus-visible:ring-[#f77f00]"
+                      />
+                    );
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="space-y-2">
+                <Label
+                  htmlFor="startDate"
+                  className="text-sm font-medium text-[#333]"
+                >
+                  Data de Início
+                </Label>
+                <Input
+                  id="startDate"
+                  type="date"
+                  {...register("startDate")}
+                  className="border-[#e5e5e5] focus-visible:ring-[#f77f00]"
+                  aria-invalid={!!errors.startDate}
+                />
+                {errors.startDate && (
+                  <p className="text-xs text-[#fc5735]">
+                    {errors.startDate.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="endDate"
+                  className="text-sm font-medium text-[#333]"
+                >
+                  Data de Expiração (opcional)
+                </Label>
+                <Input
+                  id="endDate"
+                  type="date"
+                  {...register("endDate")}
+                  disabled={Boolean(noEndDate)}
+                  className={`border-[#e5e5e5] focus-visible:ring-[#f77f00] ${noEndDate ? "opacity-60 cursor-not-allowed" : ""}`}
+                />
+
+                <Controller
+                  control={control}
+                  name="noEndDate"
+                  defaultValue={false}
+                  render={({ field }) => (
+                    <div className="flex items-center gap-2 mt-2">
+                      <Checkbox
+                        id="noEndDate"
+                        checked={Boolean(field.value)}
+                        onCheckedChange={(v) => {
+                          const checked = Boolean(v);
+                          field.onChange(checked);
+                          if (checked) setValue("endDate", null);
+                        }}
+                      />
+                      <Label
+                        htmlFor="noEndDate"
+                        className="text-sm text-[#333]"
+                      >
+                        Sem data de expiração
+                      </Label>
+                    </div>
+                  )}
+                />
+
+                {endDate && !noEndDate && (
+                  <p className="text-xs text-[#888] mt-1">
+                    Expira em {formatDate(endDate)}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="maxUses"
+                  className="text-sm font-medium text-[#333]"
+                >
+                  Máx. de Usos (opcional)
+                </Label>
+                <Input
+                  id="maxUses"
+                  type="number"
+                  {...register("maxUses", { valueAsNumber: true })}
+                  placeholder="Deixe em branco para ilimitado"
+                  className="border-[#e5e5e5] focus-visible:ring-[#f77f00]"
+                />
+              </div>
+            </div>
+
+            <DialogFooter className="gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setDialogOpen(false)}
+                className="border-[#e5e5e5]"
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-[#f77f00] hover:bg-[#e67e00] text-white"
+              >
+                {isSubmitting
+                  ? "Salvando..."
+                  : editingId
+                    ? "Atualizar Cupom"
+                    : "Criar Cupom"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
       <section className="px-6 py-2 min-h-0">
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold text-[#222] mb-1 flex items-center gap-2">
-            <Ticket className="size-5 text-[#f77f00]" />
-            {editingId ? "Editar Cupom" : "Novo Cupom"}
-          </h3>
-          <p className="text-sm text-[#888]">
-            {editingId
-              ? "Atualize as informações do cupom"
-              : "Crie um novo código de desconto"}
-          </p>
+        <div className="mb-6 flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-semibold text-[#222] mb-1 flex items-center gap-2">
+              <Ticket className="size-5 text-[#f77f00]" />
+              Cupons Cadastrados
+            </h3>
+            <p className="text-sm text-[#888]">
+              {coupons.length === 0
+                ? "Nenhum cupom cadastrado ainda"
+                : `${coupons.length} ${coupons.length === 1 ? "cupom" : "cupons"} disponível`}
+            </p>
+          </div>
+
+          <Button
+            onClick={() => {
+              setEditingId(null);
+              reset({
+                code: "",
+                discountType: "PERCENTAGE",
+                discountValue: 0,
+                minimumPurchaseValue: null,
+                startDate: new Date().toISOString().split("T")[0],
+                endDate: null,
+                noEndDate: false,
+                maxUses: null,
+              });
+              setDialogOpen(true);
+            }}
+            className="bg-[#f77f00] hover:bg-[#e67e00] text-white"
+          >
+            <Plus className="size-4 mr-1.5" />
+            Novo Cupom
+          </Button>
         </div>
 
         <Card className="border border-[#f0f0f0] shadow-sm mb-8">
           <CardContent className="pt-6">
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="code"
-                    className="text-sm font-medium text-[#333]"
-                  >
-                    Código do Cupom
-                  </Label>
-                  <Input
-                    id="code"
-                    {...register("code")}
-                    placeholder="Ex: SUMMER2024"
-                    className="uppercase border-[#e5e5e5] focus-visible:ring-[#f77f00]"
-                    aria-invalid={!!errors.code}
-                  />
-                  {errors.code && (
-                    <p className="text-xs text-[#fc5735]">
-                      {errors.code.message}
-                    </p>
-                  )}
-                  {duplicateCode && (
-                    <p className="text-xs text-[#fc5735]">
-                      Este cupom já existe
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="discountType"
-                    className="text-sm font-medium text-[#333]"
-                  >
-                    Tipo de Desconto
-                  </Label>
-                  <Select
-                    value={discountType}
-                    onValueChange={(value) =>
-                      setValue("discountType", value as "PERCENTAGE" | "FIXED")
-                    }
-                  >
-                    <SelectTrigger className="border-[#e5e5e5] focus:ring-[#f77f00]">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="PERCENTAGE">Percentual (%)</SelectItem>
-                      <SelectItem value="FIXED">Valor Fixo (R$)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="discountValue"
-                    className="text-sm font-medium text-[#333] flex items-center gap-1"
-                  >
-                    {discountType === "PERCENTAGE" ? (
-                      <>
-                        <Percent className="size-3.5" />
-                        Desconto (%)
-                      </>
-                    ) : (
-                      <>Desconto (R$)</>
-                    )}
-                  </Label>
-                  <Controller
-                    control={control}
-                    name="discountValue"
-                    defaultValue={0}
-                    render={({ field }) => {
-                      const formatPercent = (val: number | undefined) =>
-                        typeof val === "number"
-                          ? `${val.toLocaleString("pt-BR", {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            })}%`
-                          : "";
-
-                      const formatCurrency = (val: number | undefined) =>
-                        typeof val === "number"
-                          ? val.toLocaleString("pt-BR", {
-                              style: "currency",
-                              currency: "BRL",
-                            })
-                          : "";
-
-                      return (
-                        <Input
-                          id="discountValue"
-                          inputMode="numeric"
-                          value={
-                            discountType === "PERCENTAGE"
-                              ? formatPercent(field.value)
-                              : formatCurrency(field.value)
-                          }
-                          onChange={(e) => {
-                            const digits = e.target.value.replace(/\D/g, "");
-                            const cents =
-                              digits === "" ? 0 : parseInt(digits, 10);
-                            const numberValue = cents / 100;
-                            field.onChange(numberValue);
-                          }}
-                          onBlur={field.onBlur}
-                          placeholder={
-                            discountType === "PERCENTAGE" ? "0,00%" : "R$ 0,00"
-                          }
-                          className="border-[#2e0202] focus-visible:ring-[#f77f00]"
-                          aria-invalid={!!errors.discountValue}
-                        />
-                      );
-                    }}
-                  />
-                  {errors.discountValue && (
-                    <p className="text-xs text-[#fc5735]">
-                      {errors.discountValue.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="minimumPurchaseValue"
-                    className="text-sm font-medium text-[#333]"
-                  >
-                    Compra Mínima (R$) (opcional)
-                  </Label>
-                  <Controller
-                    control={control}
-                    name="minimumPurchaseValue"
-                    defaultValue={null}
-                    render={({ field }) => {
-                      const formatCurrency = (val: number | null | undefined) =>
-                        typeof val === "number"
-                          ? val.toLocaleString("pt-BR", {
-                              style: "currency",
-                              currency: "BRL",
-                            })
-                          : "";
-
-                      return (
-                        <Input
-                          id="minimumPurchaseValue"
-                          inputMode="numeric"
-                          value={formatCurrency(field.value)}
-                          onChange={(e) => {
-                            const digits = e.target.value.replace(/\D/g, "");
-                            if (digits === "") {
-                              field.onChange(null);
-                              return;
-                            }
-                            const cents = parseInt(digits, 10);
-                            const numberValue = cents / 100;
-                            field.onChange(numberValue);
-                          }}
-                          onBlur={field.onBlur}
-                          placeholder="R$ 0,00"
-                          className="border-[#e5e5e5] focus-visible:ring-[#f77f00]"
-                        />
-                      );
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="startDate"
-                    className="text-sm font-medium text-[#333]"
-                  >
-                    Data de Início
-                  </Label>
-                  <Input
-                    id="startDate"
-                    type="date"
-                    {...register("startDate")}
-                    className="border-[#e5e5e5] focus-visible:ring-[#f77f00]"
-                    aria-invalid={!!errors.startDate}
-                  />
-                  {errors.startDate && (
-                    <p className="text-xs text-[#fc5735]">
-                      {errors.startDate.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="endDate"
-                    className="text-sm font-medium text-[#333]"
-                  >
-                    Data de Expiração (opcional)
-                  </Label>
-                  <Input
-                    id="endDate"
-                    type="date"
-                    {...register("endDate")}
-                    className="border-[#e5e5e5] focus-visible:ring-[#f77f00]"
-                  />
-                  {endDate && (
-                    <p className="text-xs text-[#888]">
-                      Expira em {formatDate(endDate)}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="maxUses"
-                    className="text-sm font-medium text-[#333]"
-                  >
-                    Máx. de Usos (opcional)
-                  </Label>
-                  <Input
-                    id="maxUses"
-                    type="number"
-                    {...register("maxUses", { valueAsNumber: true })}
-                    placeholder="Deixe em branco para ilimitado"
-                    className="border-[#e5e5e5] focus-visible:ring-[#f77f00]"
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-3 pt-2">
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="bg-[#f77f00] hover:bg-[#e67e00] text-white"
-                >
-                  {isSubmitting
-                    ? "Salvando..."
-                    : editingId
-                    ? "Atualizar Cupom"
-                    : "Criar Cupom"}
-                </Button>
-                {editingId && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {
-                      setEditingId(null);
-                      reset();
-                    }}
-                  >
-                    Cancelar
-                  </Button>
-                )}
-              </div>
-            </form>
-
-            <Separator className="my-6" />
-
             <div className="mb-4">
               <h3 className="text-lg font-semibold text-[#222] mb-1">
                 Cupons Cadastrados
@@ -490,9 +565,7 @@ export default function Coupons() {
               <p className="text-sm text-[#888]">
                 {coupons.length === 0
                   ? "Nenhum cupom cadastrado"
-                  : `${coupons.length} ${
-                      coupons.length === 1 ? "cupom" : "cupons"
-                    } cadastrado(s)`}
+                  : `${coupons.length} ${coupons.length === 1 ? "cupom" : "cupons"} cadastrado(s)`}
               </p>
             </div>
 
@@ -531,16 +604,12 @@ export default function Coupons() {
                           <Badge className="bg-[#f77f00]/10 text-[#f77f00] border-0 font-medium">
                             {coupon.discount_type === "PERCENTAGE"
                               ? `${coupon.discount_value}%`
-                              : `R$ ${Number(coupon.discount_value).toFixed(
-                                  2
-                                )}`}
+                              : `R$ ${Number(coupon.discount_value).toFixed(2)}`}
                           </Badge>
                         </TableCell>
                         <TableCell>
                           {coupon.minimum_purchase_value
-                            ? `R$ ${Number(
-                                coupon.minimum_purchase_value
-                              ).toFixed(2)}`
+                            ? `R$ ${Number(coupon.minimum_purchase_value).toFixed(2)}`
                             : "—"}
                         </TableCell>
                         <TableCell className="text-sm text-[#666]">
@@ -586,38 +655,40 @@ export default function Coupons() {
                   </TableBody>
                 </Table>
 
-                <div className="mt-4">
-                  <Pagination aria-label="Coupons pagination">
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationPrevious
-                          onClick={() => setPage((p) => Math.max(1, p - 1))}
-                          aria-disabled={page === 1}
-                        />
-                      </PaginationItem>
-
-                      {Array.from({ length: totalPages }).map((_, i) => (
-                        <PaginationItem key={i}>
-                          <PaginationLink
-                            isActive={page === i + 1}
-                            onClick={() => setPage(i + 1)}
-                          >
-                            {i + 1}
-                          </PaginationLink>
+                {totalPages > 1 && (
+                  <div className="mt-4">
+                    <Pagination aria-label="Coupons pagination">
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious
+                            onClick={() => setPage((p) => Math.max(1, p - 1))}
+                            aria-disabled={page === 1}
+                          />
                         </PaginationItem>
-                      ))}
 
-                      <PaginationItem>
-                        <PaginationNext
-                          onClick={() =>
-                            setPage((p) => Math.min(totalPages, p + 1))
-                          }
-                          aria-disabled={page === totalPages}
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                </div>
+                        {Array.from({ length: totalPages }).map((_, i) => (
+                          <PaginationItem key={i}>
+                            <PaginationLink
+                              isActive={page === i + 1}
+                              onClick={() => setPage(i + 1)}
+                            >
+                              {i + 1}
+                            </PaginationLink>
+                          </PaginationItem>
+                        ))}
+
+                        <PaginationItem>
+                          <PaginationNext
+                            onClick={() =>
+                              setPage((p) => Math.min(totalPages, p + 1))
+                            }
+                            aria-disabled={page === totalPages}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  </div>
+                )}
               </div>
             )}
           </CardContent>
