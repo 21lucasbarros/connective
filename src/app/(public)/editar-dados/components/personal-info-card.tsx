@@ -16,17 +16,21 @@ import { Mail, Phone, Save } from "lucide-react";
 
 interface Props {
   user: User | null;
-  onChange: (patch: Partial<User>) => void;
-  onSave: () => Promise<void> | void;
+  onChangeAction: (patch: Partial<User>) => void;
+  onSaveAction: () => Promise<void> | void;
 }
 
-export default function PersonalInfoCard({ user, onChange, onSave }: Props) {
+export default function PersonalInfoCard({
+  user,
+  onChangeAction,
+  onSaveAction,
+}: Props) {
   const [saving, setSaving] = useState(false);
 
   async function handleSave() {
     setSaving(true);
     try {
-      await onSave();
+      await onSaveAction();
     } finally {
       setSaving(false);
     }
@@ -47,7 +51,7 @@ export default function PersonalInfoCard({ user, onChange, onSave }: Props) {
             <Input
               id="firstName"
               value={user?.name ?? ""}
-              onChange={(e) => onChange({ name: e.target.value })}
+              onChange={(e) => onChangeAction({ name: e.target.value })}
             />
           </div>
         </div>
@@ -60,7 +64,7 @@ export default function PersonalInfoCard({ user, onChange, onSave }: Props) {
               id="email"
               type="email"
               value={user?.email ?? ""}
-              onChange={(e) => onChange({ email: e.target.value })}
+              onChange={(e) => onChangeAction({ email: e.target.value })}
               className="pl-10"
             />
           </div>
@@ -76,7 +80,7 @@ export default function PersonalInfoCard({ user, onChange, onSave }: Props) {
             <Input
               id="phone"
               value={user?.phone ?? ""}
-              onChange={(e) => onChange({ phone: e.target.value })}
+              onChange={(e) => onChangeAction({ phone: e.target.value })}
               className="pl-10"
             />
           </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -14,14 +14,14 @@ import { Label } from "@/components/ui/label";
 import { Lock, Eye, EyeOff, Shield } from "lucide-react";
 
 interface Props {
-  onChangePassword: (payload: {
+  onChangePasswordAction: (payload: {
     currentPassword: string;
     newPassword: string;
     confirmPassword: string;
   }) => Promise<void> | void;
 }
 
-export default function SecurityCard({ onChangePassword }: Props) {
+export default function SecurityCard({ onChangePasswordAction }: Props) {
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -33,7 +33,11 @@ export default function SecurityCard({ onChangePassword }: Props) {
   async function handleSave() {
     setSaving(true);
     try {
-      await onChangePassword({ currentPassword, newPassword, confirmPassword });
+      await onChangePasswordAction({
+        currentPassword,
+        newPassword,
+        confirmPassword,
+      });
     } finally {
       setSaving(false);
     }

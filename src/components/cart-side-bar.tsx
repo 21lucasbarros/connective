@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,8 +16,16 @@ import { useCart } from "@/lib/cart";
 import { useRouter } from "next/navigation";
 
 export default function CartSideBar() {
+  const [mounted, setMounted] = useState(false);
+
   const { cart, total, itemCount, updateQty, removeItem } = useCart();
   const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
     <Sheet>
@@ -27,6 +36,7 @@ export default function CartSideBar() {
           className="relative hover:bg-gray-100 transition-colors rounded-lg p-2"
         >
           <ShoppingCart className="text-[#8338ec] w-5 h-5" />
+
           {itemCount > 0 && (
             <Badge className="absolute -top-1 -right-1 bg-[#fc5735] text-white text-xs font-medium min-w-5 h-5 flex items-center justify-center px-1.5 rounded-full">
               {itemCount}
@@ -34,6 +44,7 @@ export default function CartSideBar() {
           )}
         </Button>
       </SheetTrigger>
+
       <SheetContent
         side="right"
         className="w-full sm:w-100 p-0 flex flex-col bg-white"
@@ -42,6 +53,7 @@ export default function CartSideBar() {
           <SheetTitle className="text-2xl font-semibold text-[#8338ec]">
             Carrinho
           </SheetTitle>
+
           {itemCount > 0 && (
             <p className="text-sm text-gray-500 mt-1">
               {itemCount} {itemCount === 1 ? "item" : "itens"}
@@ -62,6 +74,7 @@ export default function CartSideBar() {
                     <h4 className="font-medium text-gray-900 mb-1">
                       {item.name}
                     </h4>
+
                     <p className="text-sm text-gray-500">
                       R$ {item.price.toFixed(2)}
                     </p>
@@ -70,14 +83,18 @@ export default function CartSideBar() {
                       <div className="flex items-center gap-2 border border-[#8338ec]/20 rounded-lg">
                         <button
                           aria-label={`Diminuir ${item.name}`}
-                          onClick={() => updateQty(item.id, item.qty - 1)}
+                          onClick={() =>
+                            updateQty(item.id, Math.max(1, item.qty - 1))
+                          }
                           className="p-2 hover:bg-[#8338ec]/5 transition-colors"
                         >
                           <Minus className="w-3.5 h-3.5 text-[#8338ec]" />
                         </button>
+
                         <span className="w-8 text-center text-sm font-medium text-gray-900">
                           {item.qty}
                         </span>
+
                         <button
                           aria-label={`Aumentar ${item.name}`}
                           onClick={() => updateQty(item.id, item.qty + 1)}
