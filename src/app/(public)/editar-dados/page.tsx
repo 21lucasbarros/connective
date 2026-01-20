@@ -87,7 +87,7 @@ export default function EditarDadosPage() {
   async function handleDeleteAccount() {
     if (
       !confirm(
-        "Tem certeza que deseja excluir sua conta? Esta ação é permanente."
+        "Tem certeza que deseja excluir sua conta? Esta ação é permanente.",
       )
     )
       return;
@@ -135,10 +135,10 @@ export default function EditarDadosPage() {
       <div className="space-y-6">
         <PersonalInfoCard
           user={user}
-          onChange={handleChangeLocal}
-          onSave={handleSave}
+          onChangeAction={handleChangeLocal}
+          onSaveAction={handleSave}
         />
-        <SecurityCard onChangePassword={handleChangePassword} />
+        <SecurityCard onChangePasswordAction={handleChangePassword} />
         <AccountInfoCard user={user} />
         <DangerZoneCard onDelete={handleDeleteAccount} />
       </div>
