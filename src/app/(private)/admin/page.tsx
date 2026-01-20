@@ -111,46 +111,47 @@ export default function AdminPage() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <nav className="flex gap-2 mb-8 bg-white p-2 rounded-xl shadow-sm">
+        <nav className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 mb-8 bg-white p-2 rounded-xl shadow-sm">
           {tabs.map((t, idx) => {
             const Icon = t.icon;
-            // cores das abas
+
             const activeColors = [
-              "bg-[#8338ec] text-white", // Dashboard
-              "bg-[#fc5735] text-white", // Cupons
-              "bg-[#43bccd] text-white", // Serviços
-              "bg-[#43bccd] text-white", // Usuários
+              "bg-[#8338ec] text-white",
+              "bg-[#fc5735] text-white",
+              "bg-[#43bccd] text-white",
+              "bg-[#43bccd] text-white",
             ];
+
             const hoverColors = [
-              "hover:bg-[#ede7fa]", // Dashboard
-              "hover:bg-[#ffe5e0]", // Cupons
-              "hover:bg-[#ede7fa]", // Serviços (roxo)
-              "hover:bg-[#e0f7fa]", // Usuários (azul)
+              "hover:bg-[#ede7fa]",
+              "hover:bg-[#ffe5e0]",
+              "hover:bg-[#ede7fa]",
+              "hover:bg-[#e0f7fa]",
             ];
+
+            const activeClass = activeColors[idx] || "bg-gray-800 text-white";
+            const hoverClass = hoverColors[idx] || "hover:bg-gray-100";
+
             return (
               <Button
                 key={t.id}
                 variant="ghost"
-                onClick={() =>
-                  setTab(t.id as "dashboard" | "services" | "users" | "coupons")
-                }
-                className={`group flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all h-auto ${
-                  tab === t.id
-                    ? `${activeColors[idx]} hover:${
-                        activeColors[idx].split(" ")[0]
-                      } hover:text-black`
-                    : `text-[#222] ${hoverColors[idx]}`
-                }`}
+                onClick={() => setTab(t.id as any)}
+                className={`
+            group flex items-center justify-center sm:justify-start gap-2 px-4 py-3 sm:py-2 rounded-lg font-medium transition-all h-auto
+            w-full sm:w-auto grow sm:grow-0
+            ${
+              tab === t.id
+                ? `${activeClass} hover:${activeClass.split(" ")[0]} hover:opacity-90`
+                : `text-[#222] ${hoverClass}`
+            }
+          `}
               >
                 <Icon
                   size={20}
-                  className={
-                    tab === t.id
-                      ? "text-white group-hover:text-black"
-                      : "text-black"
-                  }
+                  className={tab === t.id ? "text-white" : "text-black"}
                 />
-                {t.label}
+                <span className="truncate">{t.label}</span>
               </Button>
             );
           })}
