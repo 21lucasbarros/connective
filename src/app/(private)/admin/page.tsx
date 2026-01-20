@@ -167,8 +167,6 @@ export default function AdminPage() {
                 </p>
               </div>
 
-              <CouponsAlert coupons={coupons} />
-
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card className="bg-[#fc5735] rounded-xl text-white shadow-lg border-none">
                   <CardContent className="p-6">
@@ -281,6 +279,9 @@ export default function AdminPage() {
                         </p>
                       </div>
                     </Button>
+                  </div>
+                  <div className="mt-4">
+                    <CouponsAlert coupons={coupons} />
                   </div>
                 </CardContent>
               </Card>
