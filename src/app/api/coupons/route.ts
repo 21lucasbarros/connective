@@ -10,8 +10,8 @@ import { z } from "zod";
 function safeSerialize(obj: unknown) {
   return JSON.parse(
     JSON.stringify(obj, (_key, value) =>
-      typeof value === "bigint" ? value.toString() : value
-    )
+      typeof value === "bigint" ? value.toString() : value,
+    ),
   );
 }
 
@@ -23,7 +23,7 @@ export async function GET() {
     console.error(error);
     return NextResponse.json(
       { error: "Erro ao buscar cupons" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: "Dados inválidos", details: error.issues },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -108,13 +108,13 @@ export async function PUT(req: NextRequest) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: "Dados inválidos", details: error.issues },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     return NextResponse.json(
       { error: "Erro ao atualizar cupom" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -134,7 +134,7 @@ export async function DELETE(req: NextRequest) {
     console.error(error);
     return NextResponse.json(
       { error: "Erro ao deletar cupom" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

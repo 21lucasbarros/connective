@@ -41,6 +41,10 @@ export default function OrderSummaryCard({
     window.paymentBrickController
       .getFormData()
       .then((FormData: any) => {
+        fetch("/api/mercado-pago/create-payment", {
+          method: "POST",
+          body: JSON.stringify(FormData),
+        });
         console.log("FormData received, creating payment...", FormData);
       })
       .catch((error: any) => console.log(error));
