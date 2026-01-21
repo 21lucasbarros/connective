@@ -4,7 +4,6 @@ import { NextRequest } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    0;
     const paymentCreate = await payment.create({
       body: {
         payment_method: { type: body.paymentType },
