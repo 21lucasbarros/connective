@@ -12,6 +12,7 @@ export interface ServiceTable {
   name: string;
   price: number;
   description: string | null;
+  is_custom: boolean;
   created_at: ColumnType<Date, string | undefined, never>;
   updated_at: ColumnType<Date, string | undefined, never>;
 }

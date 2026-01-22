@@ -12,6 +12,7 @@ type ServiceCardProps = {
   formatted_price?: string | null;
   color: string;
   features?: string[];
+  is_custom?: boolean;
 };
 
 export default function ServicesCard({
@@ -21,6 +22,7 @@ export default function ServicesCard({
   formatted_price,
   color,
   features = [],
+  is_custom,
 }: ServiceCardProps) {
   const { addItem } = useCart();
   const [loading, setLoading] = useState(false);
@@ -31,7 +33,7 @@ export default function ServicesCard({
     const n = Number(
       String(price)
         .replace(/[^0-9.,-]/g, "")
-        .replace(/,/g, ".")
+        .replace(/,/g, "."),
     );
     return isNaN(n) ? 0 : n;
   };
@@ -45,6 +47,13 @@ export default function ServicesCard({
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRequestProposal = () => {
+    const to = "connective.socialmedia@gmail.com";
+    const subject = `Solicitação de proposta personalizada - ${name}`;
+    const body = `Olá Connective,%0D%0A%0D%0AGostaria de solicitar uma proposta personalizada para o serviço: ${name}.%0D%0A%0D%0APor favor, me retornem com mais detalhes e orçamento.%0D%0A%0D%0AObrigado!`;
+    window.location.href = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
   const formatPrice = () => {
     if (price !== undefined && price !== null) {
@@ -121,40 +130,52 @@ export default function ServicesCard({
           )}
         </div>
 
-        <motion.button
-          className="w-full py-3.5 px-6 rounded-lg font-bold text-white text-base transition-all duration-300 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
-          style={{ backgroundColor: color }}
-          onClick={handleAdd}
-          whileTap={{ scale: 0.97 }}
-          disabled={loading}
-        >
-          {loading ? (
-            <span className="flex items-center gap-2">
-              <svg
-                className="animate-spin h-5 w-5 text-white"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                  fill="none"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                />
-              </svg>
-              Carregando...
-            </span>
-          ) : (
-            "Contratar"
-          )}
-        </motion.button>
+        {is_custom ? (
+          <motion.button
+            className="w-full py-3.5 px-6 rounded-lg font-bold text-white text-base transition-all duration-300 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+            style={{ backgroundColor: color }}
+            onClick={handleRequestProposal}
+            whileTap={{ scale: 0.97 }}
+            disabled={loading}
+          >
+            Solicite uma proposta personalizada
+          </motion.button>
+        ) : (
+          <motion.button
+            className="w-full py-3.5 px-6 rounded-lg font-bold text-white text-base transition-all duration-300 hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+            style={{ backgroundColor: color }}
+            onClick={handleAdd}
+            whileTap={{ scale: 0.97 }}
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
+                Carregando...
+              </span>
+            ) : (
+              "Contratar"
+            )}
+          </motion.button>
+        )}
       </div>
     </motion.div>
   );

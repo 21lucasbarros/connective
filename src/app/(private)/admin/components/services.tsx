@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -49,6 +50,7 @@ const serviceSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
   price: z.number().min(0, "Preço inválido"),
   description: z.string().optional().nullable(),
+  is_custom: z.boolean().optional(),
 });
 
 type ServiceForm = z.infer<typeof serviceSchema>;
@@ -71,7 +73,7 @@ export default function Service() {
     formState: { errors, isSubmitting },
   } = useForm<ServiceForm>({
     resolver: zodResolver(serviceSchema),
-    defaultValues: { name: "", price: 0, description: "" },
+    defaultValues: { name: "", price: 0, description: "", is_custom: false },
   });
 
   useEffect(() => {
@@ -86,7 +88,7 @@ export default function Service() {
 
   function openCreateDialog() {
     setEditingId(null);
-    reset({ name: "", price: 0, description: "" });
+    reset({ name: "", price: 0, description: "", is_custom: false });
     setDialogOpen(true);
   }
 
@@ -95,6 +97,7 @@ export default function Service() {
     setValue("name", service.name);
     setValue("price", service.price);
     setValue("description", service.description ?? "");
+    setValue("is_custom", service.is_custom ?? false);
     setDialogOpen(true);
   }
 
@@ -105,6 +108,7 @@ export default function Service() {
       formData.append("name", values.name);
       formData.append("price", String(values.price));
       formData.append("description", values.description ?? "");
+      formData.append("is_custom", String(values.is_custom ?? false));
 
       await fetch("/api/services", {
         method: "PUT",
@@ -115,6 +119,7 @@ export default function Service() {
       formData.append("name", values.name);
       formData.append("price", String(values.price));
       formData.append("description", values.description ?? "");
+      formData.append("is_custom", String(values.is_custom ?? false));
 
       await fetch("/api/services", { method: "POST", body: formData });
     }
@@ -246,6 +251,30 @@ export default function Service() {
                 placeholder="Detalhes sobre o serviço..."
                 className="border-[#e5e5e5] focus-visible:ring-[#8338ec] min-h-25 resize-none"
               />
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-3">
+                <Controller
+                  control={control}
+                  name="is_custom"
+                  defaultValue={false}
+                  render={({ field }) => (
+                    <Checkbox
+                      checked={!!field.value}
+                      onCheckedChange={(v) => field.onChange(Boolean(v))}
+                    />
+                  )}
+                />
+                <div>
+                  <Label className="text-sm font-medium text-[#333] mb-0">
+                    Serviço personalizado
+                  </Label>
+                  <p className="text-xs text-[#666]">
+                    Marque caso este serviço precise de proposta personalizada
+                  </p>
+                </div>
+              </div>
             </div>
 
             <DialogFooter className="gap-2">

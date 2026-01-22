@@ -14,6 +14,7 @@ type ServicePublic = {
   formatted_price?: string | null;
   color?: string | null;
   features?: string[];
+  is_custom?: boolean | null;
 };
 
 // Paleta de cores da marca (ordem será embaralhada)
@@ -130,6 +131,7 @@ export default function Services() {
                       service.color ||
                       shuffledColors[index % shuffledColors.length]
                     }
+                    is_custom={service.is_custom ?? false}
                     features={service.features}
                   />
                 </motion.div>
