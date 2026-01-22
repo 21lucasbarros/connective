@@ -1,4 +1,5 @@
 import { payment } from "@/lib/mercado-pago";
+import { Payment } from "mercadopago";
 import { NextRequest } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -12,17 +13,15 @@ export async function POST(req: NextRequest) {
         installments: body.formData.installments,
         payment_method_id: body.formData.payment_method_id,
         issuer_id: body.formData.issuer_id,
-        payer: {
-          email: body.formData.payer.email,
-          identification: {
-            number: body.formData.payer.identification.number,
-            type: body.formData.payer.identification.type,
-          },
-        },
+        payer: body.formData.payer,
       },
     });
     return Response.json({
-      paymentCreate: paymentCreate,
+      payment: {
+        id: paymentCreate.id,
+        status: paymentCreate.status,
+        qr_code: paymentCreate.point_of_interaction,
+      },
     });
   } catch (error) {
     console.error(error);
