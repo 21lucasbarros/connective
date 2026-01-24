@@ -37,18 +37,66 @@ export default function OrderSummaryCard({
   total,
 }: Props) {
   function createPayment() {
+    /**
+     * santi, mais uma vez, desculpa por mexer no seu código
+     *
+     * a ideia aqui é simples:
+     * eu pego os dados do formulário direto do payment brick
+     * (cartão, parcelas, tudo que o mercado pago já montou pra gente)
+     */
     /*@ts-expect-error */
     window.paymentBrickController
       .getFormData()
       .then((FormData: any) => {
-        fetch("/api/mercado-pago/create-payment", {
-          method: "POST",
-          body: JSON.stringify(FormData),
-        });
+        /**
+         * quando o FormData chega, eu já disparo a criação do pagamento
+         * usando uma função async pra ficar mais "fácil" de ler
+         */
+        (async () => {
+          try {
+            /**
+             * aqui eu chamo a sua, vc é o mestre dela, API de create-payment
+             * mando tudo que o mercado pago pediu
+             * e forço redirect manual pra eu mesmo controlar pra onde vai
+             */
+            const res = await fetch("/api/mercado-pago/create-payment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ ...FormData, redirect: true }),
+              redirect: "manual",
+            });
+
+            /**
+             * se o backend respondeu com redirect (303),
+             * ele vem com um Location no header
+             * aí eu só jogo o usuário direto pra lá
+             */
+            const loc = res.headers.get("location") || undefined;
+            if (loc) return (window.location.href = loc);
+
+            /**
+             * se não veio redirect no header,
+             * eu tento ler o json da resposta
+             * e vejo se tem uma redirect_to pra seguir
+             */
+            const json = await res.json().catch(() => null);
+            if (json && json.redirect_to)
+              return (window.location.href = json.redirect_to);
+          } catch (err) {
+            /**
+             * se der qualquer merda no meio do caminho,
+             * pelo menos a gente loga pra saber o que aconteceu
+             */
+            console.error("createPayment error", err);
+          }
+        })();
+
+        // logzinho só pra garantir que os dados chegaram certinho
         console.log("FormData received, creating payment...", FormData);
       })
       .catch((error: any) => console.log(error));
   }
+
   return (
     <Card className="sticky top-4">
       <CardHeader>
