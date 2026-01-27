@@ -78,7 +78,8 @@ export default function ServicesCard({
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="rounded-2xl overflow-hidden shadow-lg flex flex-col bg-white hover:shadow-xl transition-shadow duration-300"
+      className={`rounded-2xl overflow-hidden shadow-lg flex flex-col bg-white hover:shadow-xl transition-shadow duration-300 ${is_custom ? "w-87.5 min-w-87.5" : "w-67.5 min-w-67.5"}`}
+      style={{ minHeight: "100%" }}
     >
       <motion.div
         initial={{ scale: 1 }}
