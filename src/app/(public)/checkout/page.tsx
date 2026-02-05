@@ -14,6 +14,7 @@ import { ArrowLeft } from "lucide-react";
 
 initMercadoPago(process.env.NEXT_PUBLIC_MERCADO_PAGO_PUBLIC_KEY!, {
   locale: "pt-BR",
+  frontEndStack: "react",
 });
 
 export default function Checkout() {
@@ -73,7 +74,8 @@ export default function Checkout() {
     if (!code) return setCouponError("Digite um código de cupom");
 
     const found = availableCoupons.find(
-      (c: Coupon) => String(c.code).toLowerCase() === String(code).toLowerCase()
+      (c: Coupon) =>
+        String(c.code).toLowerCase() === String(code).toLowerCase(),
     );
     if (!found) return setCouponError("Cupom não encontrado");
 
@@ -88,7 +90,7 @@ export default function Checkout() {
     const min = Number(found.minimum_purchase_value ?? 0);
     if (min > 0 && subtotal < min)
       return setCouponError(
-        `Valor mínimo para usar esse cupom é R$ ${min.toFixed(2)}`
+        `Valor mínimo para usar esse cupom é R$ ${min.toFixed(2)}`,
       );
 
     if (found.max_uses && typeof found.used_count === "number") {

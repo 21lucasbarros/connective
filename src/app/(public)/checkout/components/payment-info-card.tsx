@@ -27,7 +27,7 @@ export default function PaymentInfoCard({ total }: Props) {
   const customization: ComponentProps<typeof Payment>["customization"] = {
     paymentMethods: {
       atm: "all",
-      ticket: "all",
+
       bankTransfer: ["pix"],
       creditCard: "all",
       prepaidCard: "all",
