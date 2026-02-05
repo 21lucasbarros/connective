@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
         payer: body.formData.payer,
       },
     });
+    console.log(paymentCreate);
     return Response.json({
       payment: {
         id: paymentCreate.id,
