@@ -38,26 +38,21 @@ export default function OrderSummaryCard({
 }: Props) {
   function createPayment() {
     /**
-     * santi, mais uma vez, desculpa por mexer no seu código
-     *
-     * a ideia aqui é simples:
-     * eu pego os dados do formulário direto do payment brick
-     * (cartão, parcelas, tudo que o mercado pago já montou pra gente)
+     * Função para criar o pagamento e validar o status
+     * Pega os dados do formulário do Mercado Pago
      */
     /*@ts-expect-error */
     window.paymentBrickController
       .getFormData()
       .then((FormData: any) => {
         /**
-         * quando o FormData chega, eu já disparo a criação do pagamento
-         * usando uma função async pra ficar mais "fácil" de ler
+         * Quando os dados do formulário chegam, dispara a criação do pagamento
          */
         (async () => {
           try {
             /**
-             * aqui eu chamo a sua, vc é o mestre dela, API de create-payment
-             * mando tudo que o mercado pago pediu
-             * e forço redirect manual pra eu mesmo controlar pra onde vai
+             * Chama a API de create-payment com os dados do Mercado Pago
+             * Força redirecionamento manual para controlar o fluxo
              */
             const res = await fetch("/api/mercado-pago/create-payment", {
               method: "POST",
@@ -67,31 +62,54 @@ export default function OrderSummaryCard({
             });
 
             /**
-             * se o backend respondeu com redirect (303),
-             * ele vem com um Location no header
-             * aí eu só jogo o usuário direto pra lá
+             * Se o backend respondeu com redirect (303),
+             * há um Location no header - redireciona imediatamente
              */
             const loc = res.headers.get("location") || undefined;
             if (loc) return (window.location.href = loc);
 
             /**
-             * se não veio redirect no header,
-             * eu tento ler o json da resposta
-             * e vejo se tem uma redirect_to pra seguir
+             * Se não veio redirect no header,
+             * tenta ler o JSON da resposta
              */
             const json = await res.json().catch(() => null);
-            if (json && json.redirect_to)
-              return (window.location.href = json.redirect_to);
+
+            if (!json) {
+              console.error("Resposta inválida do servidor");
+              return;
+            }
+
+            /**
+             * Valida o status do pagamento
+             * Aprovado: status === "approved" E status_detail === "accredited"
+             * Outros: pending, rejected, etc
+             */
+            const { isApproved, status, redirect_to } = json;
+
+            if (!redirect_to) {
+              console.error("Sem URL de redirecionamento");
+              return;
+            }
+
+            /**
+             * Se aprovado, redireciona normalmente
+             * Se não, ainda redireciona mas a página exibirá o status apropriado
+             */
+            if (isApproved) {
+              console.log("Pagamento aprovado, redirecionando...");
+            } else {
+              console.warn(`Pagamento com status: ${status}`);
+            }
+
+            window.location.href = redirect_to;
           } catch (err) {
             /**
-             * se der qualquer merda no meio do caminho,
-             * pelo menos a gente loga pra saber o que aconteceu
+             * Em caso de erro, registra no console
              */
             console.error("createPayment error", err);
           }
         })();
 
-        // logzinho só pra garantir que os dados chegaram certinho
         console.log("FormData received, creating payment...", FormData);
       })
       .catch((error: any) => console.log(error));

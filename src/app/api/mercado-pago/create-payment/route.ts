@@ -18,14 +18,18 @@ export async function POST(req: NextRequest) {
     });
 
     /**
-     * santi desculpa por mexer no seu código, mas eu estava sem sono xd
-     *
-     * a partir daqui eu tentei deixar o fluxo mais esperto:
-     *
-     * como a resposta do sdk do mercado pago às vezes muda,
-     * eu tentei pegar o id do pagamento de vários lugares possíveis
-     * (direto, dentro de response, dentro de body, etc)
-     * se não achar em nenhum, fica null mesmo
+     * validacao do status do pagamento
+     * verifica se o pagamento foi aprovado corretamente
+     * status valido para aprovacao: status = "approved" E status_detail = "accredited"
+     */
+    const paymentStatus = (paymentCreate as any)?.status || null;
+    const paymentStatusDetail = (paymentCreate as any)?.status_detail || null;
+
+    const isApproved =
+      paymentStatus === "approved" && paymentStatusDetail === "accredited";
+
+    /**
+     * extrai do ID do pagamento de multiplas fontes possiveis
      */
     const maybeId =
       (paymentCreate as any)?.id ||
@@ -34,27 +38,29 @@ export async function POST(req: NextRequest) {
       null;
 
     /**
-     * aqui eu pensei assim,
-     * se o front mandar uma redirect_url, a gente respeita ela
-     * se não mandar, eu crio uma rota padrão de sucesso
-     * e, se tiver id do pagamento, já mando ele como query
+     * construcao da URL de redirecionamento
+     * inclui o status do pagamento como parametro
+     * prioriza sempre redirect_url do corpo da requisicao se existir
      */
     const redirectUrlFromBody =
       typeof body.redirect_url === "string" ? body.redirect_url : null;
 
+    const statusParam = isApproved
+      ? "approved"
+      : paymentStatus === "pending"
+        ? "pending"
+        : "rejected";
+
     const defaultSuccess = maybeId
-      ? `/checkout/success?payment_id=${encodeURIComponent(String(maybeId))}`
-      : "/checkout/success";
+      ? `/checkout/success?payment_id=${encodeURIComponent(String(maybeId))}&status=${statusParam}`
+      : `/checkout/success?status=${statusParam}`;
 
     const finalRedirect = redirectUrlFromBody || defaultSuccess;
 
     /**
-     * aqui é o pulo do gato,
-     * se a requisição vier direto do browser (form, navegação normal),
-     * eu faço um redirect no servidor
-     *
-     * se vier de fetch/axios/etc, eu só devolvo json
-     * e deixo o front decidir o que fazer
+     * diferencia entre requisicoes do navegador e fetch
+     * navegador: faz redirect HTTP 303
+     * fetch/API: retorna JSON
      */
     const accept = req.headers.get("accept") || "";
     if (accept.includes("text/html")) {
@@ -65,11 +71,16 @@ export async function POST(req: NextRequest) {
     }
 
     /**
-     * caso padrão,
-     * devolvo o pagamento criado e a url sugerida
-     * aí o front pode redirecionar quando quiser
+     * retorno da API para cliente fetch
+     * inclui informacoes do pagamento e URL de redirecionamento
      */
-    return Response.json({ paymentCreate, redirect_to: finalRedirect });
+    return Response.json({
+      paymentCreate,
+      status: paymentStatus,
+      status_detail: paymentStatusDetail,
+      isApproved,
+      redirect_to: finalRedirect,
+    });
   } catch (error) {
     console.error(error);
     return Response.json({ error: (error as Error).message }, { status: 500 });
