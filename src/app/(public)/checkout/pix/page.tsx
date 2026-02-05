@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { QrCode, Copy, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -8,7 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-export default function CheckoutPix() {
+function CheckoutPixContent() {
   const searchParams = useSearchParams();
   const [copied, setCopied] = useState(false);
 
@@ -177,5 +178,19 @@ export default function CheckoutPix() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutPix() {
+  return (
+    <Suspense
+      fallback={
+        <div className="max-w-2xl mx-auto py-12 px-4 text-center">
+          <p className="text-gray-600">Carregando dados do pagamento...</p>
+        </div>
+      }
+    >
+      <CheckoutPixContent />
+    </Suspense>
   );
 }
