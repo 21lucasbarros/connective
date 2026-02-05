@@ -80,11 +80,10 @@ export default function OrderSummaryCard({
             }
 
             /**
-             * Valida o status do pagamento
-             * Aprovado: status === "approved" E status_detail === "accredited"
-             * Outros: pending, rejected, etc
+             * Valida a resposta do pagamento
+             * Extrai informações de status e PIX se aplicável
              */
-            const { isApproved, status, redirect_to } = json;
+            const { isApproved, status, isPixPayment, redirect_to } = json;
 
             if (!redirect_to) {
               console.error("Sem URL de redirecionamento");
@@ -92,10 +91,11 @@ export default function OrderSummaryCard({
             }
 
             /**
-             * Se aprovado, redireciona normalmente
-             * Se não, ainda redireciona mas a página exibirá o status apropriado
+             * Log do status para debug
              */
-            if (isApproved) {
+            if (isPixPayment) {
+              console.log("Fluxo PIX: redirecionando para QR Code");
+            } else if (isApproved) {
               console.log("Pagamento aprovado, redirecionando...");
             } else {
               console.warn(`Pagamento com status: ${status}`);

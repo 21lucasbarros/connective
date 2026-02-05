@@ -18,9 +18,25 @@ export async function POST(req: NextRequest) {
     });
 
     /**
-     * validacao do status do pagamento
-     * verifica se o pagamento foi aprovado corretamente
-     * status valido para aprovacao: status = "approved" E status_detail = "accredited"
+     * Detecção do método de pagamento
+     * Se for PIX, precisa extrair QR Code e copy-paste code
+     */
+    const paymentMethodId =
+      body.formData?.payment_method_id || body.paymentMethodId || null;
+    const selectedPaymentMethod =
+      body.selectedPaymentMethod || body.formData?.payment_method_id || null;
+    const isPixPayment =
+      paymentMethodId === "pix" || selectedPaymentMethod === "pix";
+
+    console.log("=== PAYMENT METHOD DEBUG ===");
+    console.log("paymentMethodId:", paymentMethodId);
+    console.log("selectedPaymentMethod:", selectedPaymentMethod);
+    console.log("isPixPayment:", isPixPayment);
+
+    /**
+     * Validação do status do pagamento
+     * Verifica se o pagamento foi aprovado corretamente
+     * Status válido para aprovação: status = "approved" E status_detail = "accredited"
      */
     const paymentStatus = (paymentCreate as any)?.status || null;
     const paymentStatusDetail = (paymentCreate as any)?.status_detail || null;
@@ -29,7 +45,7 @@ export async function POST(req: NextRequest) {
       paymentStatus === "approved" && paymentStatusDetail === "accredited";
 
     /**
-     * extrai do ID do pagamento de multiplas fontes possiveis
+     * Extração do ID do pagamento de múltiplas fontes possíveis
      */
     const maybeId =
       (paymentCreate as any)?.id ||
@@ -38,24 +54,97 @@ export async function POST(req: NextRequest) {
       null;
 
     /**
-     * construcao da URL de redirecionamento
-     * inclui o status do pagamento como parametro
-     * prioriza sempre redirect_url do corpo da requisicao se existir
+     * Extração de dados PIX da resposta
+     * O Mercado Pago retorna em point_of_interaction ou em outras localizações
+     * Log completo para debug
+     */
+    let pixQrCodeBase64 = null;
+    let pixQrCodeText = null;
+    let pixCopyPaste = null;
+
+    if (isPixPayment && paymentStatus === "pending") {
+      console.log("=== EXTRACTING PIX DATA ===");
+
+      const pointOfInteraction = (paymentCreate as any)?.point_of_interaction;
+
+      if (pointOfInteraction?.transaction_data) {
+        // Extrai a imagem base64 do QR Code
+        pixQrCodeBase64 =
+          pointOfInteraction.transaction_data.qr_code_base64 || null;
+
+        // Extrai o código texto (copia e cola)
+        pixQrCodeText = pointOfInteraction.transaction_data.qr_code || null;
+
+        // Extrai o código copia e cola
+        pixCopyPaste =
+          pointOfInteraction.transaction_data.copy_paste ||
+          pointOfInteraction.transaction_data.qr_code ||
+          null;
+
+        console.log(
+          "✓ QR Code Base64 encontrado:",
+          pixQrCodeBase64 ? "sim" : "não",
+        );
+        console.log(
+          "✓ Código PIX (texto) encontrado:",
+          pixQrCodeText ? "sim" : "não",
+        );
+        console.log(
+          "✓ Código Copia e Cola encontrado:",
+          pixCopyPaste ? "sim" : "não",
+        );
+      } else {
+        console.warn(
+          "⚠ transaction_data não encontrado em point_of_interaction",
+        );
+      }
+    }
+
+    /**
+     * Construção da URL de redirecionamento
+     * Se for PIX com dados, redireciona para página de Pix
+     * Caso contrário, usa o fluxo padrão
      */
     const redirectUrlFromBody =
       typeof body.redirect_url === "string" ? body.redirect_url : null;
 
-    const statusParam = isApproved
-      ? "approved"
-      : paymentStatus === "pending"
-        ? "pending"
-        : "rejected";
+    let finalRedirect: string;
 
-    const defaultSuccess = maybeId
-      ? `/checkout/success?payment_id=${encodeURIComponent(String(maybeId))}&status=${statusParam}`
-      : `/checkout/success?status=${statusParam}`;
+    if (isPixPayment && paymentStatus === "pending") {
+      // Fluxo PIX: verifica se tem dados do QR Code
+      if (pixQrCodeBase64) {
+        // Redireciona para página intermediária de Pix
+        const queryParams = new URLSearchParams({
+          payment_id: String(maybeId || ""),
+          qr_code_base64: pixQrCodeBase64,
+          ...(pixCopyPaste && { copy_paste: pixCopyPaste }),
+        });
+        finalRedirect = `/checkout/pix?${queryParams.toString()}`;
+        console.log("✓ Redirecionando para página PIX com QR Code Base64");
+      } else {
+        // Se não tem QR Code, avisa no console mas ainda redireciona
+        console.warn(
+          "⚠ PIX selecionado mas QR Code Base64 não encontrado. Redirecionando para sucesso pendente.",
+        );
+        const statusParam = "pending";
+        finalRedirect = maybeId
+          ? `/checkout/success?payment_id=${encodeURIComponent(String(maybeId))}&status=${statusParam}`
+          : `/checkout/success?status=${statusParam}`;
+      }
+    } else {
+      // Fluxo padrão (cartão, outros)
+      const statusParam = isApproved
+        ? "approved"
+        : paymentStatus === "pending"
+          ? "pending"
+          : "rejected";
 
-    const finalRedirect = redirectUrlFromBody || defaultSuccess;
+      const defaultSuccess = maybeId
+        ? `/checkout/success?payment_id=${encodeURIComponent(String(maybeId))}&status=${statusParam}`
+        : `/checkout/success?status=${statusParam}`;
+
+      finalRedirect = redirectUrlFromBody || defaultSuccess;
+    }
 
     /**
      * diferencia entre requisicoes do navegador e fetch
@@ -79,6 +168,9 @@ export async function POST(req: NextRequest) {
       status: paymentStatus,
       status_detail: paymentStatusDetail,
       isApproved,
+      isPixPayment,
+      pixQrCodeBase64,
+      pixCopyPaste,
       redirect_to: finalRedirect,
     });
   } catch (error) {
