@@ -75,3 +75,12 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: (error as Error).message }, { status: 500 });
   }
 }
+
+// console.log(paymentCreate);
+// return Response.json({
+//   payment: {
+//     id: paymentCreate.id,
+//     status: paymentCreate.status,
+//     qr_code: paymentCreate.point_of_interaction,
+//   },
+// });
