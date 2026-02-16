@@ -42,3 +42,35 @@ export type Service = {
   created_at?: string;
   updated_at?: string;
 };
+
+export type OrderItem = {
+  id: number;
+  order_id: number;
+  service_id: number;
+  quantity: number;
+  unit_price: number;
+  subtotal: number;
+  created_at: string;
+  service?: Service;
+};
+
+export type Order = {
+  id: number;
+  user_id: number;
+  status: "pending" | "processing" | "completed" | "cancelled";
+  total_amount: number;
+  coupon_id?: number | null;
+  payment_method: string;
+  payment_status: "pending" | "completed" | "failed" | "refunded";
+  created_at: string;
+  updated_at: string;
+  items?: OrderItem[];
+  user?: User;
+  coupon?: Coupon;
+};
+
+export type OrderWithDetails = Order & {
+  items: OrderItem[];
+  user: User;
+  coupon?: Coupon;
+};

@@ -9,17 +9,19 @@ import { ChevronsLeft } from "lucide-react";
 import Services from "./components/services";
 import Users from "./components/users";
 import Coupons from "./components/coupons";
+import Orders from "./components/orders";
 import {
   Users as UserIcon,
   Tag,
   Briefcase,
   LayoutDashboard,
+  ShoppingCart,
 } from "lucide-react";
 import CouponsAlert from "./components/coupons-alert";
 
 export default function AdminPage() {
   const [tab, setTab] = useState<
-    "dashboard" | "services" | "users" | "coupons"
+    "dashboard" | "services" | "users" | "coupons" | "orders"
   >("dashboard");
   const router = useRouter();
 
@@ -28,6 +30,11 @@ export default function AdminPage() {
       id: "dashboard",
       label: "Dashboard",
       icon: LayoutDashboard,
+    },
+    {
+      id: "orders",
+      label: "Pedidos",
+      icon: ShoppingCart,
     },
     {
       id: "coupons",
@@ -117,6 +124,7 @@ export default function AdminPage() {
 
             const activeColors = [
               "bg-[#8338ec] text-white",
+              "bg-[#ff6b6b] text-white",
               "bg-[#fc5735] text-white",
               "bg-[#43bccd] text-white",
               "bg-[#43bccd] text-white",
@@ -124,6 +132,7 @@ export default function AdminPage() {
 
             const hoverColors = [
               "hover:bg-[#ede7fa]",
+              "hover:bg-[#ffe0e0]",
               "hover:bg-[#ffe5e0]",
               "hover:bg-[#ede7fa]",
               "hover:bg-[#e0f7fa]",
@@ -287,6 +296,7 @@ export default function AdminPage() {
               </Card>
             </div>
           )}
+          {tab === "orders" && <Orders />}
           {tab === "services" && <Services />}
           {tab === "users" && <Users />}
           {tab === "coupons" && <Coupons />}

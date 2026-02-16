@@ -44,10 +44,34 @@ export interface CouponsTable {
   updated_at: ColumnType<Date, Date | undefined, never>;
 }
 
+export interface OrdersTable {
+  id: Generated<number>;
+  user_id: number;
+  status: string;
+  total_amount: number;
+  coupon_id: number | null;
+  payment_method: string;
+  payment_status: string;
+  created_at: ColumnType<Date, Date | undefined, never>;
+  updated_at: ColumnType<Date, Date | undefined, never>;
+}
+
+export interface OrderItemsTable {
+  id: Generated<number>;
+  order_id: number;
+  service_id: number;
+  quantity: number;
+  unit_price: number;
+  subtotal: number;
+  created_at: ColumnType<Date, Date | undefined, never>;
+}
+
 export interface Database {
   services: ServiceTable;
   user: UserTable;
   coupons: CouponsTable;
+  orders: OrdersTable;
+  order_items: OrderItemsTable;
 }
 
 const dialect = new PostgresDialect({
