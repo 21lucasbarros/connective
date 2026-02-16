@@ -1,4 +1,4 @@
-import { User, LogOut, Home, UserCog } from "lucide-react";
+import { User, LogOut, Home, UserCog, Package } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -80,6 +80,9 @@ export default function UserMenu() {
           onClick={() => (window.location.href = "/editar-dados")}
         >
           <User className="w-4 h-4" /> Editar dados
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => (window.location.href = "/pedidos")}>
+          <Package className="w-4 h-4" /> Meus pedidos
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} variant="destructive">

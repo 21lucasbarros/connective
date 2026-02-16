@@ -18,6 +18,7 @@ import {
 import { useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { useAuthStore } from "@/lib/auth-store";
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido"),
@@ -33,6 +34,7 @@ interface LoginFormProps {
 
 export function LoginForm({ onErrorAction, onToggleAction }: LoginFormProps) {
   const router = useRouter();
+  const { setUser } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -62,6 +64,7 @@ export function LoginForm({ onErrorAction, onToggleAction }: LoginFormProps) {
       }
 
       // Salvar em localStorage e cookie
+      setUser(data.user);
       localStorage.setItem("user", JSON.stringify(data.user));
       document.cookie = `user=${JSON.stringify(data.user)}; path=/; max-age=${
         60 * 60 * 24 * 7

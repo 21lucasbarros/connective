@@ -8,9 +8,11 @@ import SecurityCard from "./components/security-card";
 import AccountInfoCard from "./components/account-info-card";
 import DangerZoneCard from "./components/danger-zone-card";
 import type { User } from "@/lib/types";
+import { useAuthStore } from "@/lib/auth-store";
 
 export default function EditarDadosPage() {
-  const [user, setUser] = useState<User | null>(null);
+  const { user: authUser, setUser } = useAuthStore();
+  const [user, setCurrentUser] = useState<User | null>(null);
   const [patch, setPatch] = useState<Partial<User>>({});
 
   useEffect(() => {
@@ -23,7 +25,7 @@ export default function EditarDadosPage() {
       fetch(`/api/users/${parsed.id}`)
         .then((r) => r.json())
         .then((data: User | { error: string }) => {
-          if (!("error" in data)) setUser(data as User);
+          if (!("error" in data)) setCurrentUser(data as User);
         })
         .catch((e) => console.error("Failed to fetch user:", e));
     } catch (e: unknown) {
@@ -33,7 +35,7 @@ export default function EditarDadosPage() {
 
   function handleChangeLocal(p: Partial<User>) {
     setPatch((prev) => ({ ...prev, ...p }));
-    setUser((u) => (u ? { ...u, ...p } : u));
+    setCurrentUser((u) => (u ? { ...u, ...p } : u));
   }
 
   async function handleSave() {
@@ -62,6 +64,7 @@ export default function EditarDadosPage() {
         ...(patch.name ? { name: patch.name } : {}),
       };
       localStorage.setItem("user", JSON.stringify(updatedLocal));
+      setUser(updatedLocal);
       setPatch({});
       alert("Informações pessoais atualizadas com sucesso!");
     } catch (e: unknown) {
@@ -102,6 +105,7 @@ export default function EditarDadosPage() {
         body: JSON.stringify({ id: parsed.id }),
       });
       if (!res.ok) throw new Error("Erro ao excluir conta");
+      setUser(null);
       localStorage.removeItem("user");
       alert("Conta excluída");
       window.location.href = "/";

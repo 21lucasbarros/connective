@@ -19,6 +19,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useState } from "react";
+import { useAuthStore } from "@/lib/auth-store";
 
 function validateCPFValue(raw?: string) {
   if (!raw) return true;
@@ -73,6 +74,7 @@ interface SignupFormProps {
 
 export function SignupForm({ onErrorAction, onToggleAction }: SignupFormProps) {
   const router = useRouter();
+  const { setUser } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -116,6 +118,7 @@ export function SignupForm({ onErrorAction, onToggleAction }: SignupFormProps) {
         return;
       }
 
+      setUser(data.user);
       localStorage.setItem("user", JSON.stringify(data.user));
       document.cookie = `user=${JSON.stringify(data.user)}; path=/; max-age=${
         60 * 60 * 24 * 7

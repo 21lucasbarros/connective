@@ -11,6 +11,7 @@ import Link from "next/link";
 const navItems = [
   { label: "Início", href: "/" },
   { label: "Loja", href: "/loja" },
+  { label: "Meus Pedidos", href: "/pedidos" },
 ];
 
 export default function Header() {
