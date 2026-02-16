@@ -75,11 +75,11 @@ export default function Services() {
             <Spinner className="--font-roboto mx-auto w-12 h-12 text-[#8338ec]" />
             <p className="mt-4 text-gray-600">Carregando serviços...</p>
 
-            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-5 sm:gap-6 lg:gap-7 xl:gap-8">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div
                   key={i}
-                  className="rounded-2xl overflow-hidden shadow-lg flex flex-col bg-white"
+                  className="h-full rounded-2xl overflow-hidden shadow-lg flex flex-col bg-white"
                 >
                   <div className="h-40 w-full p-6 flex flex-col justify-center relative">
                     <Skeleton className="h-8 w-1/2 mb-2" />
@@ -112,7 +112,7 @@ export default function Services() {
             Nenhum serviço disponível no momento.
           </p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-5 sm:gap-6 lg:gap-7 xl:gap-8">
             <AnimatePresence>
               {services.map((service, index) => (
                 <motion.div
@@ -121,6 +121,7 @@ export default function Services() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 30 }}
                   transition={{ duration: 0.4, delay: index * 0.08 }}
+                  className="h-full"
                 >
                   <ServicesCard
                     name={service.name}

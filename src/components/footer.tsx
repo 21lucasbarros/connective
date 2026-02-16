@@ -111,7 +111,7 @@ export default function Footer() {
           <p>
             Site desenvolvido por{" "}
             <a
-              href="https://vpotech.vercel.app"
+              href="https:vpotech.com.br"
               target="_blank"
               rel="noopener noreferrer"
               className="font-roboto text-[#8338ec] hover:text-[#fc5735] font-semibold transition-colors"
